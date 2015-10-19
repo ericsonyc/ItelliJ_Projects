@@ -1762,12 +1762,12 @@ public class LeetCode {
         int h = Math.min((n + 1) / 2, (m + 1) / 2);
         for (int i = 0; i < h; i++) {
             for (int j = i; j < m - i; j++) {
-                list.add(matrix[i][j + i]);
+                list.add(matrix[i][j]);
             }
             for (int j = i + 1; j < n - i - 1; j++) {
                 list.add(matrix[j][m - i - 1]);
             }
-            for (int j = m - i - 1; j >= i; j--) {
+            for (int j = m - i - 1; j >= i && i != n - i - 1; j--) {
                 list.add(matrix[n - i - 1][j]);
             }
             for (int j = n - i - 2; j > i && i != m - i - 1; j--) {
@@ -1777,16 +1777,34 @@ public class LeetCode {
         return list;
     }
 
+    public boolean canJump(int[] nums) {
+        int max = 0;
+        for (int i = 0; i < nums.length; ) {
+            if (nums[i] + i > max) {
+                max = nums[i] + i;
+            }
+            if (max > i) {
+                i++;
+            } else {
+                if (max == nums.length - 1) return true;
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        int[][] nums = {
-                {3},
-                {2},
-                {4},
-                {5}
-        };
-        leetCode.spiralOrder(nums);
+        int[] nums = {0};
+        leetCode.canJump(nums);
+
+//        int[][] nums = {
+//                {1, 2, 3},
+//                {4, 5, 6},
+//                {7, 8, 9}
+//        };
+//        leetCode.spiralOrder(nums);
 
 //        int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
 //        System.out.println(leetCode.maxSubArray(nums));
