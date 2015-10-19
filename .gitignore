@@ -20,6 +20,8 @@ $RECYCLE.BIN/
 *.properties
 *.MF
 *.name
+*.apk
+*.txt
 
 # Windows shortcuts
 *.lnk
