@@ -1793,11 +1793,96 @@ public class LeetCode {
         return true;
     }
 
+    public class Interval {
+        int start;
+        int end;
+
+        Interval() {
+            start = 0;
+            end = 0;
+        }
+
+        Interval(int s, int e) {
+            start = s;
+            end = e;
+        }
+    }
+
+    public List<Interval> merge(List<Interval> intervals) {
+        List<Interval> result = new LinkedList<Interval>();
+        if (intervals.size() == 0)
+            return result;
+        Collections.sort(intervals, new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                return Integer.compare(o1.start, o2.start);
+            }
+        });
+        Interval temp = intervals.get(0);
+        for (int i = 1; i < intervals.size(); i++) {
+            Interval curr = intervals.get(i);
+            if (temp.end < curr.start) {
+                result.add(temp);
+                temp = curr;
+            } else {
+                if (temp.end <= curr.end) {
+                    temp.end = curr.end;
+                }
+            }
+        }
+        result.add(temp);
+        return result;
+    }
+
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        if (intervals.size() == 0) {
+            intervals.add(newInterval);
+            return intervals;
+        }
+        int i = 0;
+        while (i < intervals.size()) {
+            Interval inter = intervals.get(i);
+            if (newInterval.end < inter.start) {
+                intervals.add(i, newInterval);
+                break;
+            } else if (newInterval.start > inter.end) {
+                i++;
+                continue;
+            } else {
+                newInterval.start = Math.min(inter.start, newInterval.start);
+                newInterval.end = Math.max(inter.end, newInterval.end);
+                intervals.remove(i);
+            }
+        }
+        if (i == intervals.size()) {
+            intervals.add(newInterval);
+        }
+        return intervals;
+    }
+
+    public int lengthOfLastWord(String s) {
+        int count = 0;
+        if (s == null || s.length() == 0) {
+            return count;
+        }
+        s = s.trim();
+        int i = s.length() - 1;
+        for (; i >= 0; i--) {
+            if (s.charAt(i) == ' ') {
+                break;
+            }
+        }
+        count += s.length() - 1 - i;
+        return count;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        int[] nums = {0};
-        leetCode.canJump(nums);
+        leetCode.lengthOfLastWord("a");
+
+//        int[] nums = {0};
+//        leetCode.canJump(nums);
 
 //        int[][] nums = {
 //                {1, 2, 3},
