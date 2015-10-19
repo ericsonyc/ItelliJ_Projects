@@ -18,6 +18,8 @@ $RECYCLE.BIN/
 *.class
 *.jar
 *.properties
+*.MF
+*.name
 
 # Windows shortcuts
 *.lnk
