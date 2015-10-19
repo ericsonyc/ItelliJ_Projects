@@ -1876,10 +1876,61 @@ public class LeetCode {
         return count;
     }
 
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        if (n == 0)
+            return matrix;
+        int h = (n + 1) / 2;
+        int number = 1;
+        for (int i = 0; i < h; i++) {
+            for (int j = i; j < n - i; j++) {
+                matrix[i][j] = number++;
+            }
+            for (int j = i + 1; j < n - i - 1; j++) {
+                matrix[j][n - i - 1] = number++;
+            }
+            for (int j = n - i - 1; j >= i && i != n - i - 1; j--) {
+                matrix[n - i - 1][j] = number++;
+            }
+            for (int j = n - i - 2; j > i && i != n - i - 1; j--) {
+                matrix[j][i] = number++;
+            }
+        }
+        return matrix;
+    }
+
+    public String getPermutation(int n, int k) {
+        int[] array = new int[n];
+        for (int i = 1; i <= n; i++) {
+            array[i - 1] = i;
+        }
+        int count = 0;
+        int accumulate = 1;
+        while (k > 0) {
+            count = 0;
+            accumulate = 1;
+            while (k > accumulate) {
+                accumulate *= ++count;
+            }
+            accumulate /= count;
+            int length = (k - 1) / accumulate;
+            int temp = array[length];
+            array[length] = array[n - count - 1];
+            array[n - count - 1] = temp;
+        }
+        String result = "";
+        for (int i = 0; i < n; i++) {
+            result += array[i] + "";
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        leetCode.lengthOfLastWord("a");
+        leetCode.getPermutation(3, 4);
+
+//        leetCode.lengthOfLastWord("a");
 
 //        int[] nums = {0};
 //        leetCode.canJump(nums);
