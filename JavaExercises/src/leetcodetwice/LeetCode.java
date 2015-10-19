@@ -1901,22 +1901,33 @@ public class LeetCode {
 
     public String getPermutation(int n, int k) {
         int[] array = new int[n];
+        int total = 1;
+        String ss = "";
         for (int i = 1; i <= n; i++) {
             array[i - 1] = i;
+            total *= i;
+            ss = i + ss;
+        }
+        if (k > total) {
+            return ss;
         }
         int count = 0;
         int accumulate = 1;
-        while (k > 0) {
+        while (k > 1) {
             count = 0;
             accumulate = 1;
             while (k > accumulate) {
                 accumulate *= ++count;
             }
             accumulate /= count;
-            int length = (k - 1) / accumulate;
-            int temp = array[length];
-            array[length] = array[n - count - 1];
-            array[n - count - 1] = temp;
+            int length = (k - 1) / accumulate + n - count;
+            int temp = array[n - count];
+            array[n - count] = array[length];
+            for (int i = length; i > n - count + 1; i--) {
+                array[i] = array[i - 1];
+            }
+            array[n - count + 1] = temp;
+            k -= accumulate * (length - n + count);
         }
         String result = "";
         for (int i = 0; i < n; i++) {
@@ -1928,7 +1939,7 @@ public class LeetCode {
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        leetCode.getPermutation(3, 4);
+        System.out.println(leetCode.getPermutation(8, 8590));
 
 //        leetCode.lengthOfLastWord("a");
 
