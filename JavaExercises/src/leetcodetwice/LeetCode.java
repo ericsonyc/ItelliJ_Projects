@@ -1936,10 +1936,43 @@ public class LeetCode {
         return result;
     }
 
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null || k == 0)
+            return head;
+        ListNode curr = head;
+        ListNode tail = head;
+        int count = 0;
+        while (curr != null) {
+            tail = curr;
+            curr = curr.next;
+            count++;
+        }
+        k = k % count;
+        if (k == 0) return head;
+        count -= k;
+        curr = head;
+        ListNode prev = null;
+        while (count > 0) {
+            prev = curr;
+            curr = curr.next;
+            count--;
+        }
+        tail.next = head;
+        prev.next = null;
+        return curr;
+    }
+
+    public int uniquePaths(int m,int n){
+        
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        System.out.println(leetCode.getPermutation(8, 8590));
+        ListNode head = leetCode.new ListNode(1);
+        leetCode.rotateRight(head, 0);
+
+//        System.out.println(leetCode.getPermutation(8, 8590));
 
 //        leetCode.lengthOfLastWord("a");
 
