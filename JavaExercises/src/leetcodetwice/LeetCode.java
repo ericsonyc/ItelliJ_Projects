@@ -1962,15 +1962,172 @@ public class LeetCode {
         return curr;
     }
 
-    public int uniquePaths(int m,int n){
-        
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n];
+        dp[0] = 1;
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[j] += dp[j - 1];
+            }
+        }
+        return dp[n - 1];
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int[][] dp = new int[obstacleGrid.length][obstacleGrid[0].length];
+        dp[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+        for (int i = 1; i < obstacleGrid[0].length; i++) {
+            if (obstacleGrid[0][i] == 1) {
+                dp[0][i] = 0;
+            } else {
+                dp[0][i] = dp[0][i - 1];
+            }
+        }
+        for (int i = 1; i < obstacleGrid.length; i++) {
+            if (obstacleGrid[i][0] == 1) {
+                dp[i][0] = 0;
+            } else {
+                dp[i][0] = dp[i - 1][0];
+            }
+        }
+        for (int i = 1; i < obstacleGrid.length; i++) {
+            for (int j = 1; j < obstacleGrid[0].length; j++) {
+                if (obstacleGrid[i][j] == 1)
+                    dp[i][j] = 0;
+                else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[dp.length - 1][dp[0].length - 1];
+    }
+
+    public int minPathSum(int[][] grid) {
+        for (int i = 1; i < grid[0].length; i++) {
+            grid[0][i] += grid[0][i - 1];
+        }
+        for (int i = 1; i < grid.length; i++) {
+            grid[i][0] += grid[i - 1][0];
+        }
+        for (int i = 1; i < grid.length; i++) {
+            for (int j = 1; j < grid[0].length; j++) {
+                grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
+            }
+        }
+        return grid[grid.length - 1][grid[0].length - 1];
+    }
+
+    public boolean isNumber(String s) {
+        s = s.trim();
+        if (s.length() == 0)
+            return false;
+        int pointer = 0;
+        if (s.charAt(pointer) == '+' || s.charAt(pointer) == '-') {
+            s = s.substring(1);
+        }
+        int counte = 0;
+        int countp = 0;
+        int countn = 0;
+        while (pointer < s.length()) {
+            if (Character.isDigit(s.charAt(pointer))) {
+                pointer++;
+                countn++;
+            } else {
+                if (s.charAt(pointer) == '.') {
+                    if ((pointer == 0 || Character.isDigit(s.charAt(pointer - 1))) && countp == 0) {
+                        s = s.substring(0, pointer) + s.substring(pointer + 1);
+                        pointer = 0;
+                    } else {
+                        return false;
+                    }
+                    countp++;
+                } else if (s.charAt(pointer) == 'e') {
+                    if ((pointer > 0 && Character.isDigit(s.charAt(pointer - 1))) && counte == 0) {
+                        pointer++;
+                    } else {
+                        return false;
+                    }
+                    counte++;
+                    if (pointer == s.length())
+                        return false;
+                } else if (s.charAt(pointer) == '+' || s.charAt(pointer) == '-') {
+                    if (pointer > 0 && s.charAt(pointer - 1) == 'e') {
+                        pointer++;
+                    } else
+                        return false;
+                    if (pointer == s.length())
+                        return false;
+                } else
+                    return false;
+            }
+        }
+        return countn > 0;
+    }
+
+    public int[] plusOne(int[] digits) {
+        int plus = 1;
+        for (int i = digits.length - 1; i >= 0; i--) {
+            digits[i] += plus;
+            plus = digits[i] / 10;
+            digits[i] %= 10;
+        }
+        if (plus > 0) {
+            int[] result = new int[digits.length + 1];
+            result[0] = plus;
+            for (int i = 1; i < result.length; i++) {
+                result[i] = digits[i - 1];
+            }
+            return result;
+        }
+        return digits;
+    }
+
+    public String addBinary(String a, String b) {
+        if (a.length() < b.length())
+            return addBinary(b, a);
+        StringBuffer sb = new StringBuffer("");
+        int length = b.length() - 1;
+        int count = a.length() - b.length();
+        byte plus = 0;
+        while (length >= 0) {
+            byte left = Byte.parseByte(String.valueOf(a.charAt(length + count)));
+            byte right = Byte.parseByte(String.valueOf(b.charAt(length)));
+            byte temp = (byte) (left ^ right ^ plus);
+            sb.insert(0, temp);
+            if (left + right + plus >= 2)
+                plus = 1;
+            else
+                plus = 0;
+            length--;
+        }
+        length = a.length() - b.length() - 1;
+        while (length >= 0) {
+            byte left = Byte.parseByte(String.valueOf(a.charAt(length)));
+            sb.insert(0, left ^ plus);
+            plus = (byte) (left & plus);
+            length--;
+        }
+        if ((plus ^ 0) == 1) {
+            sb.insert(0, plus);
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        ListNode head = leetCode.new ListNode(1);
-        leetCode.rotateRight(head, 0);
+        leetCode.addBinary("11", "1");
+
+//        System.out.println(leetCode.isNumber("4e+"));
+
+//        int[][] nums = {{0, 0}, {0, 0}};
+//        leetCode.uniquePathsWithObstacles(nums);
+
+//        ListNode head = leetCode.new ListNode(1);
+//        leetCode.rotateRight(head, 0);
 
 //        System.out.println(leetCode.getPermutation(8, 8590));
 
