@@ -2143,7 +2143,7 @@ public class LeetCode {
                 for (int i = index; i < last; i++) {
                     builder.append(words[i]);
                     if (i < last - 1) {
-                        for (int j = 0; j < (spaces + ((i - index) < r ? 1 : 0)); j++)
+                        for (int j = 0; j <= (spaces + ((i - index) < r ? 1 : 0)); j++)
                             builder.append(" ");
                     }
                 }
@@ -2154,11 +2154,73 @@ public class LeetCode {
         return lines;
     }
 
+    public int mySqrt(int x) {
+        if (x == 0 || x == 1) return x ^ 0;
+        long left = 0;
+        long right = x / 2;
+        while (left <= right) {
+            long middle = left + (right - left) / 2;
+            if (middle * middle == x)
+                return (int) middle;
+            else if (middle * middle < x) {
+                left = middle + 1;
+            } else if (middle * middle > x) {
+                right = middle - 1;
+            }
+        }
+        return (int) right;
+    }
+
+    public int climbStairs(int n) {
+        if (n == 1) return 1;
+        int left = 1;
+        int right = 1;
+        for (int i = 2; i <= n; i++) {
+            int temp = left + right;
+            left = right;
+            right = temp;
+        }
+        return right;
+    }
+
+    public String simplifyPath(String path) {
+        String[] strs = path.split("/");
+        Stack<String> stack = new Stack<String>();
+        int count = 0;
+        while (count < strs.length) {
+            if (strs[count].equals(".") || strs[count].length() == 0) {
+                count++;
+            } else if (strs[count].equals("..")) {
+                if (!stack.isEmpty()) stack.pop();
+                count++;
+            } else {
+                stack.push(strs[count]);
+                count++;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            String temp = stack.pop();
+            sb.insert(0, "/" + temp);
+        }
+        if (sb.length() == 0)
+            sb.append("/");
+        return sb.toString();
+    }
+
+    public int minDistance(String word1, String word2) {
+        return 0;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        String[] words = {"a", "b", "c", "d", "e"};
-        leetCode.fullJustify(words, 3);
+        leetCode.simplifyPath("/abc/...");
+
+//        leetCode.mySqrt(2147395599);
+
+//        String[] words = {"a", "b", "c", "d", "e"};
+//        leetCode.fullJustify(words, 3);
 
 //        leetCode.addBinary("11", "1");
 
