@@ -2209,13 +2209,122 @@ public class LeetCode {
     }
 
     public int minDistance(String word1, String word2) {
-        return 0;
+        if (word1.length() == 0 || word2.length() == 0) {
+            return Math.max(word1.length(), word2.length());
+        }
+        int[][] dp = new int[word1.length()][word2.length()];
+        dp[0][0] = word1.charAt(0) == word2.charAt(0) ? 0 : 1;
+        for (int i = 1; i < word1.length(); i++) {
+            dp[i][0] = word1.charAt(i) == word2.charAt(0) ? i : dp[i - 1][0] + 1;
+        }
+        for (int i = 1; i < word2.length(); i++) {
+            dp[0][i] = word1.charAt(0) == word2.charAt(i) ? i : dp[0][i - 1] + 1;
+        }
+        for (int i = 1; i < word1.length(); i++) {
+            for (int j = 1; j < word2.length(); j++) {
+                if (word1.charAt(i) == word2.charAt(j)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1])) + 1;
+                }
+            }
+        }
+        return dp[word1.length() - 1][word2.length() - 1];
+    }
+
+    public void setZeros(int[][] matrix) {
+        int col0 = 1;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][0] == 0) col0 = 0;
+            for (int j = 1; j < matrix[0].length; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+        for (int i = matrix.length - 1; i >= 0; i--) {
+            for (int j = matrix[0].length - 1; j > 0; j--) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+            if (col0 == 0)
+                matrix[i][0] = 0;
+        }
+    }
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int left = 0;
+        int right = matrix[0].length * matrix.length - 1;
+        while (left <= right) {
+            int middle = (left + right) / 2;
+            int row = middle / matrix[0].length;
+            int col = middle - (matrix[0].length * row);
+            if (matrix[row][col] == target) {
+                return true;
+            } else if (matrix[row][col] < target) {
+                left = middle + 1;
+            } else {
+                right = middle - 1;
+            }
+        }
+        return false;
+    }
+
+    public void sortColors(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        int i = 0;
+        while (i <= right) {
+            if (nums[i] == 0) {
+                int temp = nums[i];
+                nums[i] = nums[left];
+                nums[left] = temp;
+                left++;
+                i++;
+            } else if (nums[i] == 2) {
+                int temp = nums[i];
+                nums[i] = nums[right];
+                nums[right] = temp;
+                right--;
+            } else {
+                i++;
+            }
+        }
+    }
+
+    public void sortColors2(int[] nums) {
+        int i = -1, j = -1, k = -1;
+        for (int p = 0; p < nums.length; p++) {
+            if (nums[p] == 0) {
+                nums[++k] = 2;
+                nums[++j] = 1;
+                nums[++i] = 0;
+            } else if (nums[p] == 1) {
+                nums[++k] = 2;
+                nums[++j] = 1;
+            } else {
+                nums[++k] = 2;
+            }
+        }
     }
 
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        leetCode.simplifyPath("/abc/...");
+        int[] nums = {1, 2, 0};
+        leetCode.sortColors(nums);
+
+//        int[][] nums = {{1}, {3}};
+//        leetCode.searchMatrix(nums, 2);
+
+//        int[][] nums = {{-4, -2147483648, 6, -7, 0}, {-8, 6, -8, -6, 0}, {2147483647, 2, -9, -6, -10}};
+//        leetCode.setZeros(nums);
+
+//        leetCode.minDistance("mart", "karma");
+
+//        leetCode.simplifyPath("/abc/...");
 
 //        leetCode.mySqrt(2147395599);
 
