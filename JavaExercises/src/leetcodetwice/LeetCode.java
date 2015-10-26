@@ -2493,11 +2493,139 @@ public class LeetCode {
         return list;
     }
 
+    public boolean exist(char[][] board, String word) {
+        boolean flag = false;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == word.charAt(0)) {
+                    board[i][j] = '#';
+                    flag |= getBoard(board, word, 1, i, j);
+                    board[i][j] = word.charAt(0);
+                    if (flag)
+                        break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    public boolean getBoard(char[][] board, String word, int start, int row, int col) {
+        int top = row == 0 ? 0 : row - 1;
+        int bottom = row == board.length - 1 ? row : row + 1;
+        int left = col == 0 ? 0 : col - 1;
+        int right = col == board[0].length - 1 ? col : col + 1;
+        if (start >= word.length())
+            return true;
+        boolean flag = false;
+        if (!flag && board[top][col] == word.charAt(start)) {
+            board[top][col] = '#';
+            flag |= getBoard(board, word, start + 1, top, col);
+            board[top][col] = word.charAt(start);
+        }
+        if (!flag && board[row][left] == word.charAt(start)) {
+            board[row][left] = '#';
+            flag |= getBoard(board, word, start + 1, row, left);
+            board[row][left] = word.charAt(start);
+        }
+        if (!flag && board[bottom][col] == word.charAt(start)) {
+            board[bottom][col] = '#';
+            flag |= getBoard(board, word, start + 1, bottom, col);
+            board[bottom][col] = word.charAt(start);
+        }
+        if (!flag && board[row][right] == word.charAt(start)) {
+            board[row][right] = '#';
+            flag |= getBoard(board, word, start + 1, row, right);
+            board[row][right] = word.charAt(start);
+        }
+        return flag;
+    }
+
+    public boolean exist1(char[][] board, String word) {
+        char[] w = word.toCharArray();
+        for (int y = 0; y < board.length; y++) {
+            for (int x = 0; x < board[y].length; x++) {
+                if (exist(board, y, x, w, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean exist(char[][] board, int y, int x, char[] word, int i) {
+        if (i == word.length) return true;
+        if (y < 0 || x < 0 || y == board.length || x == board[y].length) return false;
+        if (board[y][x] != word[i]) return false;
+        board[y][x] ^= 256;
+        boolean exist = exist(board, y, x + 1, word, i + 1) || exist(board, y, x - 1, word, i + 1) || exist(board, y + 1, x, word, i + 1) || exist(board, y - 1, x, word, i + 1);
+        board[y][x] ^= 256;
+        return exist;
+    }
+
+    public int removeDuplicate1(int[] nums) {
+        if (nums == null) return 0;
+        int left = 1;
+        int count = 1;
+        int length = 0;
+        while (left < nums.length - length) {
+            count = 1;
+            while (left < nums.length - length && nums[left] == nums[left - 1]) {
+                left++;
+                count++;
+            }
+            if (count > 2) {
+                int temp = left - (count - 2);
+                int t = left;
+                left = temp;
+                while (t < nums.length - length) {
+                    nums[temp++] = nums[t++];
+                }
+                length += count - 2;
+            }
+            left++;
+        }
+        return nums.length - length;
+    }
+
+    public int removeDuplicates2(int[] nums) {
+        if (nums.length <= 1) return nums.length;
+        int left = 0;
+        int right = 1;
+        int count = 1;
+        while (right < nums.length) {
+            if (nums[right] == nums[left]) {
+                if (right - left < 2) {
+                    nums[count] = nums[left];
+                    count++;
+                }
+                right++;
+            } else {
+                left = right;
+                right++;
+                nums[count] = nums[left];
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public boolean search1(int[] nums, int target) {
+        return false;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        int[] nums = {1, 2, 0};
-        leetCode.sortColors(nums);
+        int[] nums = {1, 1, 1, 1, 3, 3};
+        System.out.println(leetCode.removeDuplicate1(nums));
+
+//        char[][] board = {
+//                {'c', 'a', 'a'},
+//                {'a', 'a', 'a'},
+//                {'b', 'c', 'd'}
+//        };
+//        System.out.println(leetCode.exist1(board, "aab"));
+
+//        int[] nums = {1, 2, 0};
+//        leetCode.sortColors(nums);
 
 //        int[][] nums = {{1}, {3}};
 //        leetCode.searchMatrix(nums, 2);
