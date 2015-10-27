@@ -2608,14 +2608,94 @@ public class LeetCode {
     }
 
     public boolean search1(int[] nums, int target) {
+        int start = 0, end = nums.length - 1, mid = -1;
+        while (start <= end) {
+            mid = (start + end) / 2;
+            if (nums[mid] == target)
+                return true;
+            if (nums[mid] < nums[end] || nums[mid] < nums[start]) {
+                if (target > nums[mid] && target <= nums[end]) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            } else if (nums[mid] > nums[start] || nums[mid] > nums[end]) {
+                if (target < nums[mid] && target >= nums[start]) {
+                    end = mid - 1;
+                } else {
+                    start = mid + 1;
+                }
+            } else {
+                end--;
+            }
+        }
         return false;
+    }
+
+    public boolean search3(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        int mid = 0;
+        while (lo <= hi) {
+            mid = (lo + hi) / 2;
+            if (nums[mid] == target) return true;
+            if (nums[mid] > nums[hi]) {
+                if (nums[mid] > target && nums[lo] <= target) hi = mid - 1;
+                else lo = mid + 1;
+            } else if (nums[mid] < nums[hi]) {
+                if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+                else hi = mid - 1;
+            } else
+                hi--;
+        }
+        return false;
+    }
+
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return null;
+        ListNode root = new ListNode(-1);
+        root.next = head;
+        ListNode prev = root;
+        ListNode curr = head;
+        ListNode temp = curr.next;
+        while (temp != null) {
+            if (temp.val == curr.val) {
+                prev.next = temp.next;
+                temp = temp.next;
+            } else {
+                curr = temp;
+                temp = temp.next;
+                if (prev.next != curr) {
+                    prev = prev.next;
+                }
+            }
+        }
+        return root.next;
+    }
+
+    public ListNode deleteDuplicates2(ListNode head) {
+        if (head == null) return null;
+        ListNode root = head;
+        ListNode curr = head.next;
+        while (curr != null) {
+            if (curr.val == head.val) {
+                head.next = curr.next;
+                curr = curr.next;
+            } else {
+                head = curr;
+                curr = curr.next;
+            }
+        }
+        return root;
     }
 
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        int[] nums = {1, 1, 1, 1, 3, 3};
-        System.out.println(leetCode.removeDuplicate1(nums));
+//        int[] nums = {3, 1, 1};
+//        System.out.println(leetCode.search1(nums, 3));
+
+//        int[] nums = {1, 1, 1, 1, 3, 3};
+//        System.out.println(leetCode.removeDuplicate1(nums));
 
 //        char[][] board = {
 //                {'c', 'a', 'a'},
