@@ -2688,8 +2688,32 @@ public class LeetCode {
         return root;
     }
 
+    public int largestRectangleArea(int[] height) {
+        Stack<Integer> stack = new Stack<Integer>();
+        int n = height.length, area = 0;
+        for (int i = 0; i < n; i++) {
+            while (!stack.empty() && height[stack.peek()] > height[i]) {
+                int h = height[stack.peek()];
+                stack.pop();
+                int l = stack.empty() ? -1 : stack.peek();
+                area = Math.max(area, h * (i - l - 1));
+            }
+            stack.push(i);
+        }
+        while (!stack.empty() && height[stack.peek()] > 0) {
+            int h = height[stack.peek()];
+            stack.pop();
+            int l = stack.empty() ? -1 : stack.peek();
+            area = Math.max(area, h * (height.length - 1 - l));
+        }
+        return area;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
+
+        int[] nums = {1};
+        System.out.println(leetCode.largestRectangleArea(nums));
 
 //        int[] nums = {3, 1, 1};
 //        System.out.println(leetCode.search1(nums, 3));
