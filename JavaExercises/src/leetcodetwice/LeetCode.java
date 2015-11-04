@@ -2709,11 +2709,100 @@ public class LeetCode {
         return area;
     }
 
+    public int maximalRectangle1(char[][] matrix) {
+        int max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                max = Math.max(max, maxRectangle1(matrix, i, j));
+            }
+        }
+        return max;
+    }
+
+    public int maxRectangle1(char[][] matrix, int row, int col) {
+        int minWidth = Integer.MAX_VALUE;
+        int maxArea = 0;
+        for (int i = row; i < matrix.length && matrix[i][col] == '1'; i++) {
+            int width = 0;
+            while (col + width < matrix[row].length && matrix[i][col + width] == '1') {
+                width++;
+            }
+            if (width < minWidth) {
+                minWidth = width;
+            }
+            int area = minWidth * (i - row + 1);
+            if (area > maxArea)
+                maxArea = area;
+        }
+        return maxArea;
+    }
+
+    public int maximalRectangle2(char[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) return 0;
+        int[] dp = new int[matrix[0].length];
+        int max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] == '1') {
+                    dp[j] += matrix[i][j] - '0';
+                } else {
+                    dp[j] = 0;
+                }
+            }
+            max = Math.max(maxRectangle2(dp), max);
+        }
+        return max;
+    }
+
+    public int maxRectangle2(int[] dp) {
+        Deque<Integer> stack = new ArrayDeque<Integer>();
+        int n = dp.length, area = 0;
+        for (int i = 0; i < n; i++) {
+            while (stack.size() > 0 && dp[stack.peek()] > dp[i]) {
+                int h = dp[stack.peek()];
+                stack.pop();
+                int l = stack.size() == 0 ? -1 : stack.peek();
+                area = Math.max(area, h * (i - l - 1));
+            }
+            stack.push(i);
+        }
+        while (stack.size() > 0 && dp[stack.peek()] > 0) {
+            int h = dp[stack.peek()];
+            stack.pop();
+            int l = stack.size() == 0 ? -1 : stack.peek();
+            area = Math.max(area, h * (dp.length - 1 - l));
+        }
+        return area;
+    }
+
+    public ListNode partition(ListNode head, int x) {
+        ListNode little = new ListNode(-2);
+        ListNode large = new ListNode(-1);
+        ListNode p1 = little;
+        ListNode p2 = large;
+        while (head != null) {
+            if (head.val < x) {
+                p1.next = head;
+                p1 = p1.next;
+            } else {
+                p2.next = head;
+                p2 = p2.next;
+            }
+            head = head.next;
+        }
+        p2.next = null;
+        p1.next = large.next;
+        return little.next;
+    }
+
     public static void main(String[] args) {
         LeetCode leetCode = new LeetCode();
 
-        int[] nums = {1};
-        System.out.println(leetCode.largestRectangleArea(nums));
+        char[][] matrix = {{'1', '0', '1', '0'}, {'1', '0', '1', '1'}, {'1', '0', '1', '1'}, {'1', '1', '1', '1'}};
+        leetCode.maximalRectangle2(matrix);
+
+//        int[] nums = {1};
+//        System.out.println(leetCode.largestRectangleArea(nums));
 
 //        int[] nums = {3, 1, 1};
 //        System.out.println(leetCode.search1(nums, 3));
