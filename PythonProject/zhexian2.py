@@ -12,7 +12,7 @@ job3 = []  # job3
 job4 = []  # job4
 job5 = []  # job5
 job6 = []  # job6
-file = open('D:\jobresource')
+file = open('D:\\fifojob')
 for line in file:
     line_split = line.strip('\n').split(',')
     time.append(long(line_split[0]))
