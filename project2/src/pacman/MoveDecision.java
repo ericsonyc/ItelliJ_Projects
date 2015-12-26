@@ -1,12 +1,5 @@
-package sample;
+package pacman;
 
-/**
- * MoveDecision.fx created on 2009-1-28, 14:42:00 <br>
- * MoveDecision.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
 public class MoveDecision {
 
     // x and y of an intended move

@@ -1,4 +1,4 @@
-package sample;
+package pacman;
 
 //import javafx.scene.CustomNode;
 
@@ -24,14 +24,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-/**
- * Maze.fx created on 2008-12-20, 20:22:15 <br>
- * Maze.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- * @see <a href="http://www.javafxgame.com">http://www.javafxgame.com</a>
- */
 
 public class Maze extends Parent {
 //public class Maze extends CustomNode {

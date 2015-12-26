@@ -1,17 +1,9 @@
-package sample;
+package pacman;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Ghost.fx created on 2009-1-28, 14:26:09 <br>
- * Ghost.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- * @see <a href="http://www.javafxgame.com">http://www.javafxgame.com</a>
- */
 public class Ghost extends MovingObject {
 //public class Ghost extends Parent, MovingObject{
 

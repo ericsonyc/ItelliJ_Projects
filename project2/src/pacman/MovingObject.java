@@ -1,4 +1,4 @@
-package sample;
+package pacman;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -12,13 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-/**
- * MovingObject.fx created on 2009-1-1, 11:40:49 <br>
- * MovingObject.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
 public abstract class MovingObject extends Parent {
 //public mixin class MovingObject {
 

@@ -1,12 +1,5 @@
-package sample;
+package pacman;
 
-/**
- * MazeData.java <br>
- * A 2D array for the data model of the maze.
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
 public final class MazeData {
 
     public static final int BLOCK = 1;

@@ -1,4 +1,4 @@
-package sample;
+package pacman;
 
 //import javafx.scene.CustomNode;
 //import javafx.scene.Node;

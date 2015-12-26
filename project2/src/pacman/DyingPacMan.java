@@ -1,4 +1,4 @@
-package sample;
+package pacman;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -9,13 +9,7 @@ import javafx.event.EventHandler;
 import javafx.scene.shape.Arc;
 import javafx.util.Duration;
 
-/**
- * DyingPacMan.fx created on 2009-02-06, 17:52:42 <br>
- * DyingPacMan.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
+
 public class DyingPacMan extends Arc {
 
     private final Timeline timeline;

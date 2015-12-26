@@ -1,4 +1,4 @@
-package sample;
+package pacman;
 
 import javafx.animation.Animation;
 import javafx.beans.binding.IntegerBinding;
@@ -6,14 +6,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * PacMan.fx created on 2009-1-1, 11:50:58 <br>
- * PacMan.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- * @see <a href="http://www.javafxgame.com">http://www.javafxgame.com</a>
- */
 public class PacMan extends MovingObject {
 //public class PacMan extends CustomNode, MovingObject {
 
