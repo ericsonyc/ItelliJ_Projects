@@ -8,7 +8,7 @@ public final class MazeData {
     public static final int GRID_SIZE_X = 29;
     public static final int GRID_SIZE_Y = 31;
     public static final int GRID_STROKE = 2;
-    public static final int MAGIC_DOT = 3;
+    public static final int BIG_DOT = 3;
     public static final int NORMAL_DOT = 2;
 
     private static final Object[][] DOT_POINTERS = new Object[GRID_SIZE_X + 1][GRID_SIZE_Y + 1];
@@ -87,7 +87,7 @@ public final class MazeData {
     public static void setData(int x, int y, int value) {
         MAZE_DATA[x][y] = value;
 
-        if ((value == MAGIC_DOT) || (value == NORMAL_DOT)) {
+        if ((value == BIG_DOT) || (value == NORMAL_DOT)) {
             dotTotal++;
         }
     } // end setData
