@@ -7,54 +7,31 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class PacMan extends MovingObject {
-//public class PacMan extends CustomNode, MovingObject {
-
-//  private Image defaultImage;
-//  public var defaultImage: Image = Image {
-//    url: "{__DIR__}images/left1.png"
-//  };
-
-    // images for animation
-//  def images = [
-//    defaultImage,
-//    Image {
-//      url: "{__DIR__}images/left2.png"
-//    },
-//    defaultImage,
-//    Image {
-//      url: "{__DIR__}images/round.png"
-//    }
-//  ];
 
     /**
      * The number of dots eaten.
      */
     public int dotEatenCount;
-//  public var dotEatenCount : Integer = 0;
 
     /**
      * Score of the game.
      */
     public SimpleIntegerProperty score;
-//  public var scores: Integer = 0;
 
     /**
      * Angles of rotating the images.
      */
     private static final int[] ROTATION_DEGREE = new int[]{0, 90, 180, 270};
-//  def rotationDegree = [0, 90, 180, 270];
 
     /**
      * Buffer to keep the keyboard input.
      */
     private int keyboardBuffer;
-//  var keyboardBuffer: Integer = -1;
 
     /**
      * Current direction of Pac-Man.
      */
     private final SimpleIntegerProperty currentDirection;
-//  var currentDirection: Integer = MOVE_LEFT;
 
     /**
      * Constructor.
@@ -80,37 +57,16 @@ public class PacMan extends MovingObject {
         score = new SimpleIntegerProperty(0);
         currentDirection = new SimpleIntegerProperty(MOVE_LEFT);
 
-//  postinit {
-//    imageX = MazeData.calcGridX(x);
-//    imageY = MazeData.calcGridX(y);
-//
-//    xDirection = -1;
-//    yDirection = 0;
-//
-//  }
         imageX = new SimpleIntegerProperty(MazeData.calcGridX(x));
         imageY = new SimpleIntegerProperty(MazeData.calcGridX(y));
 
         xDirection = -1;
         yDirection = 0;
 
-        // GUI image of the man
-//  var PACMAN_IMAGE : ImageView = ImageView {
-//    x: bind imageX - 13
-//    y: bind imageY - 13
-//    image: bind images[currentImage]
-//  //  cache: true
-//    transforms: Rotate {
-//      angle: bind rotationDegree[currentDirection]
-//      pivotX: bind imageX
-//      pivotY: bind imageY
-//      }
-//   }
         ImageView pacmanImage = new ImageView(defaultImage);
         pacmanImage.xProperty().bind(imageX.add(-13));
         pacmanImage.yProperty().bind(imageY.add(-13));
         pacmanImage.imageProperty().bind(imageBinding);
-//    pacmanImage.setCache(true);
         IntegerBinding rotationBinding = new IntegerBinding() {
 
             {
@@ -138,13 +94,11 @@ public class PacMan extends MovingObject {
 
         if (moveCounter < ANIMATION_STEP) {
             imageX.set(imageX.get() + (xDirection * MOVE_SPEED));
-//      imageX += xDirection * MOVE_SPEED;
         } else {
             moveCounter = 0;
             x += xDirection;
 
             imageX.set(MazeData.calcGridX(x));
-//      imageX = MazeData.calcGridX(x);
 
             // the X coordinate of the next point in the grid
             int nextX = xDirection + x;
@@ -153,12 +107,10 @@ public class PacMan extends MovingObject {
                 if ((nextX < -1) && (xDirection < 0)) {
                     x = MazeData.GRID_SIZE_X;
                     imageX.set(MazeData.calcGridX(x));
-//          imageX = MazeData.calcGridX(x);
                 } else {
                     if ((nextX > 30) && (xDirection > 0)) {
                         x = 0;
                         imageX.set(MazeData.calcGridX(x));
-//            imageX = MazeData.calcGridX(x);
                     }
                 }
             } else // check if the character hits a wall
@@ -177,12 +129,10 @@ public class PacMan extends MovingObject {
 
         if (moveCounter < ANIMATION_STEP) {
             imageY.set(imageY.get() + (yDirection * MOVE_SPEED));
-//      imageY += yDirection * MOVE_SPEED;
         } else {
             moveCounter = 0;
             y += yDirection;
             imageY.set(MazeData.calcGridX(y));
-//      imageY = MazeData.calcGridX(y);
 
             // the Y coordinate of the next point in the grid
             int nextY = yDirection + y;
@@ -200,7 +150,6 @@ public class PacMan extends MovingObject {
     private void moveRight() {
 
         if (currentDirection.get() == MOVE_RIGHT) {
-//    if ( currentDirection == MOVE_RIGHT )  return;
             return;
         }
 
@@ -219,7 +168,6 @@ public class PacMan extends MovingObject {
 
         keyboardBuffer = -1;
         currentDirection.set(MOVE_RIGHT);
-//    currentDirection = MOVE_RIGHT;
 
         state = MOVING;
     }
@@ -230,7 +178,6 @@ public class PacMan extends MovingObject {
     private void moveLeft() {
 
         if (currentDirection.get() == MOVE_LEFT) {
-//    if ( currentDirection == MOVE_LEFT )   return;
             return;
         }
 
@@ -249,7 +196,6 @@ public class PacMan extends MovingObject {
 
         keyboardBuffer = -1;
         currentDirection.set(MOVE_LEFT);
-//    currentDirection = MOVE_LEFT;
 
         state = MOVING;
     }
@@ -260,7 +206,6 @@ public class PacMan extends MovingObject {
     private void moveUp() {
 
         if (currentDirection.get() == MOVE_UP) {
-//    if ( currentDirection == MOVE_UP )  return;
             return;
         }
 
@@ -279,7 +224,6 @@ public class PacMan extends MovingObject {
 
         keyboardBuffer = -1;
         currentDirection.set(MOVE_UP);
-//    currentDirection = MOVE_UP;
 
         state = MOVING;
     }
@@ -290,7 +234,6 @@ public class PacMan extends MovingObject {
     private void moveDown() {
 
         if (currentDirection.get() == MOVE_DOWN) {
-//    if ( currentDirection == MOVE_DOWN ) return;
             return;
         }
 
@@ -309,7 +252,6 @@ public class PacMan extends MovingObject {
 
         keyboardBuffer = -1;
         currentDirection.set(MOVE_DOWN);
-//    currentDirection = MOVE_DOWN;
 
         state = MOVING;
     }
@@ -349,16 +291,14 @@ public class PacMan extends MovingObject {
 
             if (dot != null && dot.isVisible()) {
                 score.set(score.get() + 10);
-//        score += 10;
                 dot.setVisible(false);
                 dotEatenCount++;
 
                 if (score.get() >= 10000) {
-//        if ( score >= 10000 ) {
                     maze.addLife();
                 }
 
-                if (dot.dotType == MazeData.MAGIC_DOT) {
+                if (dot.dotType == MazeData.BIG_DOT) {
                     maze.makeGhostsHollow();
                 }
 
@@ -380,10 +320,8 @@ public class PacMan extends MovingObject {
      */
     @Override
     public void moveOneStep() {
-//  public override function moveOneStep() {
         if (maze.gamePaused.get()) {
 
-//      if ( timeline.paused == false ) {
             if (timeline.getStatus() != Animation.Status.PAUSED) {
                 timeline.pause();
             }
@@ -393,7 +331,6 @@ public class PacMan extends MovingObject {
 
         // handle keyboard input only when Pac-Man is at a point on the grid
         if (currentImage.get() == 0) {
-//    if ( currentImage == 0 ) {
             handleKeyboardInput();
         }
 
@@ -409,12 +346,9 @@ public class PacMan extends MovingObject {
 
             // switch to the image of the next frame
             if (currentImage.get() < ANIMATION_STEP - 1) {
-//      if ( currentImage < ANIMATION_STEP - 1  ) {
                 currentImage.set(currentImage.get() + 1);
-//        currentImage++;
             } else {
                 currentImage.set(0);
-//        currentImage=0;
                 updateScore();
             }
 
@@ -429,13 +363,11 @@ public class PacMan extends MovingObject {
     public void resetStatus() {
         state = MOVING;
         currentDirection.set(MOVE_LEFT);
-//    currentDirection = MOVE_LEFT;
         xDirection = -1;
         yDirection = 0;
 
         keyboardBuffer = -1;
         currentImage.set(0);
-//    currentImage = 0;
         moveCounter = 0;
 
         x = 15;
@@ -443,8 +375,6 @@ public class PacMan extends MovingObject {
 
         imageX.set(MazeData.calcGridX(x));
         imageY.set(MazeData.calcGridY(y));
-//    imageX = MazeData.calcGridX(x);
-//    imageY = MazeData.calcGridY(y);
 
         setVisible(true); // patweb: Added because Pac-Man is invisible at start of new life.
         start();

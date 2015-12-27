@@ -24,10 +24,7 @@ public final class MazeData {
     private MazeData() {
     }
 
-    ;
-
     private static int makeInRange(int a, char coordinate) {
-
         if (a < 0) {
             return 0;
         } else if ((coordinate == 'X') && (a > GRID_SIZE_X)) {
@@ -35,7 +32,6 @@ public final class MazeData {
         } else if ((coordinate == 'Y') && (a > GRID_SIZE_Y)) {
             return GRID_SIZE_Y;
         }
-
         return a;
     }
 
@@ -60,7 +56,6 @@ public final class MazeData {
     }
 
     public static int calcGridX(int x) {
-//  public static double calcGridX(double x) {
         return GRID_GAP * x + X_OFFSET;
     }
 
@@ -70,13 +65,11 @@ public final class MazeData {
     }
 
     public static int calcGridY(int y) {
-//  public static double calcGridY(double y) {
         return GRID_GAP * y + Y_OFFSET;
     }
 
     // calcGridY float version
     public static float calcGridYFloat(final float y) {
-//  public static double calcGridY(double y) {
         return GRID_GAP * y + Y_OFFSET;
     }
 

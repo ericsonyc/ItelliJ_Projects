@@ -57,18 +57,8 @@ public class Main extends Application {
 
         final Scene scene = new Scene(root);
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                System.out.println("scene keyevent");
-            }
-        });
         root.getChildren().add(menuBar);
 
-//        Button btn=new Button("Hello");
-//        btn.setLayoutX(0);
-//        btn.setLayoutY(25);
-//        root.getChildren().add(btn);
         maze = new Maze(menuBar);
         maze.setLayoutX(0);
         maze.setLayoutY(barHeight);
@@ -78,25 +68,22 @@ public class Main extends Application {
     }
 
     private void pauseClick() {
-        System.out.println("menubar focused:" + menuBar.isFocused());
+
         Label labelPause = (Label) (menuBar.getMenus().get(0).getGraphic());
         if (firstStart && maze.waitForStart.get()) {
             firstStart = false;
             labelPause.setText("暂停(P)");
             maze.startNewGame();
-//                    System.out.println("first start");
             maze.waitForStart.setValue(false);
         } else {
             if (pauseFlag) {
                 labelPause.setText("开始(P)");
                 pauseFlag = !pauseFlag;
                 maze.pauseGame();
-//                        System.out.println("pause");
             } else {
                 labelPause.setText("暂停(P)");
                 pauseFlag = !pauseFlag;
                 maze.resumeGame();
-//                        System.out.println("start");
             }
         }
     }
@@ -216,6 +203,9 @@ public class Main extends Application {
 //        maze.setLayoutX(0);
 //        maze.setLayoutY(barHeight);
 //        root.getChildren().add(maze);
+        if (maze.waitForStart.get()) {
+            return;
+        }
         Label labelPause = (Label) (menuBar.getMenus().get(0).getGraphic());
         labelPause.setText("开始(P)");
         firstStart = true;

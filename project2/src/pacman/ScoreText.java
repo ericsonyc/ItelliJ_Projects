@@ -11,7 +11,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class ScoreText extends Parent {
-//public class ScoreText extends Text {
 
     //  override var font = Font { size: 11 };
     private static final Font SCORE_FONT = new Font(11);
@@ -32,17 +31,6 @@ public class ScoreText extends Parent {
     }
 
     private void createTimeline() {
-//  var timeline= Timeline {
-//    repeatCount: 1
-//    keyFrames: [
-//      KeyFrame {
-//        time: 2s
-//        action: function() {
-//          visible = false;
-//        }
-//      }
-//    ]
-//  };
         timeline = new Timeline();
         timeline.setCycleCount(1);
         KeyFrame kf = new KeyFrame(Duration.seconds(DISPLAY_TIME), new EventHandler<ActionEvent>() {
