@@ -7,13 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-/**
- * WallBlackRectangle.fx created on 2008-12-27, 16:35:42 <br>
- * WallBlackRectangle.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
 public class WallBlackRectangle extends Parent {
 //public class WallBlackRectangle extends CustomNode {
 

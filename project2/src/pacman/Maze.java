@@ -13,6 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -37,6 +40,8 @@ public class Maze extends Parent {
     // counter for ghosts eaten
     private int ghostEatenCount;
 //  var ghostEatenCount : Integer;
+
+    private MenuBar menuBar;
 
     public BooleanProperty gamePaused;
 //  public var gamePaused: Boolean = false;
@@ -431,8 +436,8 @@ public class Maze extends Parent {
 //  }
 
 
-    public Maze() {
-
+    public Maze(MenuBar menuBar) {
+        this.menuBar = menuBar;
         setFocused(true);
 
         gamePaused = new SimpleBooleanProperty(false);
@@ -652,6 +657,8 @@ public class Maze extends Parent {
         final StringBinding lastGameResultBinding = new StringBinding() {
 
             {
+                Label label = (Label) (menuBar.getMenus().get(0).getGraphic());
+                label.setText("开始(P)");
                 super.bind(lastGameResult);
             }
 
@@ -954,14 +961,20 @@ public class Maze extends Parent {
         if (waitForStart.get()) {
             waitForStart.set(false);
             startNewGame();
+            Label label = (Label) (menuBar.getMenus().get(0).getGraphic());
+            label.setText("暂停(P)");
             return;
         }
 
         if (e.getCode() == KeyCode.P) {
 //    if ( e.code == KeyCode.VK_P ) {
             if (gamePaused.get()) {
+                Label label = (Label) (menuBar.getMenus().get(0).getGraphic());
+                label.setText("暂停(P)");
                 resumeGame();
             } else {
+                Label label = (Label) (menuBar.getMenus().get(0).getGraphic());
+                label.setText("开始(P)");
                 pauseGame();
             }
 

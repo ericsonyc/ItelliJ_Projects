@@ -3,13 +3,6 @@ package pacman;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-/**
- * WallBlackLine.fx created on 2008-12-27, 17:52:58 <br>
- * WallBlackLine.java created October 2011
- *
- * @author Henry Zhang
- * @author Patrick Webster
- */
 public class WallBlackLine extends Line {
 
 //  public var x1: Number;
