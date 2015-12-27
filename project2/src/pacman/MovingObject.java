@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-public abstract class MovingObject extends Parent {
+public abstract class MovingObject extends Parent {//移动物体的父类
 
     // animation frames total and movement distance
     protected static final int ANIMATION_STEP = 4;
@@ -30,18 +30,18 @@ public abstract class MovingObject extends Parent {
     protected int state;
 
     protected IntegerProperty currentImage;
-    protected Image[] images;
+    protected Image[] images;//保存pacman的图片，不同方向
     protected ObjectBinding imageBinding;
     protected int moveCounter;
 
-    protected int x;
-    protected int y;
+    protected int x;//当前x坐标
+    protected int y;//当前y坐标
 
-    public IntegerProperty imageX;
-    public IntegerProperty imageY;
+    public IntegerProperty imageX;//设置移动物体图片x大小
+    public IntegerProperty imageY;//设置移动物体图片y大小
 
-    protected int xDirection;
-    protected int yDirection;
+    protected int xDirection;//x方向
+    protected int yDirection;//y方向
 
     protected Timeline timeline;
 

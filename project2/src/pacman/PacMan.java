@@ -8,41 +8,25 @@ import javafx.scene.image.ImageView;
 
 public class PacMan extends MovingObject {
 
-    /**
-     * The number of dots eaten.
-     */
+    //吃豆子的数量
     public int dotEatenCount;
 
-    /**
-     * Score of the game.
-     */
+    //游戏的得分
     public SimpleIntegerProperty score;
 
-    /**
-     * Angles of rotating the images.
-     */
-    private static final int[] ROTATION_DEGREE = new int[]{0, 90, 180, 270};
+    //图片旋转的角度
+    private static final int[] ROTATION_DEGREE = new int[]{0, 90, 180, -90};
 
-    /**
-     * Buffer to keep the keyboard input.
-     */
+    //保存keyboard按键的缓存
     private int keyboardBuffer;
 
-    /**
-     * Current direction of Pac-Man.
-     */
+    //pacman当前的方向
     private final SimpleIntegerProperty currentDirection;
 
-    /**
-     * Constructor.
-     *
-     * @param maze
-     * @param x
-     * @param y
-     */
     public PacMan(Maze maze, int x, int y) {
 
         this.maze = maze;
+        //设置pacman的位置
         this.x = x;
         this.y = y;
 
@@ -51,18 +35,19 @@ public class PacMan extends MovingObject {
                 new Image(getClass().getResourceAsStream("images/left2.png")),
                 defaultImage,
                 new Image(getClass().getResourceAsStream("images/round.png"))
-        };
+        };//设置pacman张嘴闭嘴的动画顺序
 
         dotEatenCount = 0;
         score = new SimpleIntegerProperty(0);
-        currentDirection = new SimpleIntegerProperty(MOVE_LEFT);
+        currentDirection = new SimpleIntegerProperty(MOVE_LEFT);//设置初始的方向
 
         imageX = new SimpleIntegerProperty(MazeData.calcGridX(x));
         imageY = new SimpleIntegerProperty(MazeData.calcGridX(y));
 
-        xDirection = -1;
+        xDirection = -1;//初始化向左移动
         yDirection = 0;
 
+        //pacman图片，并设置x，y坐标
         ImageView pacmanImage = new ImageView(defaultImage);
         pacmanImage.xProperty().bind(imageX.add(-13));
         pacmanImage.yProperty().bind(imageY.add(-13));
@@ -78,16 +63,13 @@ public class PacMan extends MovingObject {
                 return ROTATION_DEGREE[currentDirection.get()];
             }
         };
-        pacmanImage.rotateProperty().bind(rotationBinding);
+        pacmanImage.rotateProperty().bind(rotationBinding);//设置图片旋转绑定
 
-        keyboardBuffer = -1;
+        keyboardBuffer = -1;//用于判断在路口的转向，初始化为-1
 
-        getChildren().add(pacmanImage); // patweb
+        this.getChildren().add(pacmanImage); //添加pacman的ImageView作为该Node节点的显示
     }
 
-    /**
-     * moving horizontally.
-     */
     private void moveHorizontally() {
 
         moveCounter++;
@@ -320,16 +302,15 @@ public class PacMan extends MovingObject {
      */
     @Override
     public void moveOneStep() {
-        if (maze.gamePaused.get()) {
-
+        if (maze.gamePaused.get()) {//判断游戏是否暂停
+            //游戏暂停时停止动画
             if (timeline.getStatus() != Animation.Status.PAUSED) {
                 timeline.pause();
             }
-
             return;
         }
 
-        // handle keyboard input only when Pac-Man is at a point on the grid
+        // 当在拐角处时处理pacman的方向键
         if (currentImage.get() == 0) {
             handleKeyboardInput();
         }

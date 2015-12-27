@@ -25,6 +25,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
@@ -32,49 +33,51 @@ public class Maze extends Parent {
 
     public static final boolean DEBUG = false;
 
-    // counter for ghosts eaten
+    // 吃掉ghosts的数量
     private int ghostEatenCount;
 
     private MenuBar menuBar;
 
-    public BooleanProperty gamePaused;
+    private Stage primaryStg;
 
-    // text to be displayed for score of eating a ghost
+    public BooleanProperty gamePaused;//游戏暂停标志
+
+    //吃掉一个ghost显示的分数文本
     private static final ScoreText[] SCORE_TEXT = {
-            new ScoreText("200", false),
-            new ScoreText("400", false),
-            new ScoreText("800", false),
-            new ScoreText("1600", false)
+            new ScoreText("100", false),
+            new ScoreText("100", false),
+            new ScoreText("100", false),
+            new ScoreText("100", false)
     };
 
-    // Pac-Man Character
+    //pacman对象
     public PacMan pacMan;
 
-    public final Ghost[] ghosts;
+    public final Ghost[] ghosts;//保存ghosts的数组
 
-    private final DyingPacMan dyingPacMan;
+    private final DyingPacMan dyingPacMan;//pacman消失对象
 
-    // the Pac-Man image
+    // pacman的图像
     private static final Image PACMAN_IMAGE = new Image(Maze.class.getResourceAsStream("images/left1.png"));
 
-    // level of the game
+    // 保存第几关
     private final SimpleIntegerProperty level;
 
-    // flag to add a life to the player the first time score exceeds 10,000
+    // 增加功能，当分数大于10000分就加一条命
     private boolean addLifeFlag;
 
-    // current lives of the player
+    //当前pacman的生命个数
     private final SimpleIntegerProperty livesCount;
 
-    // message to start a game
+    // 标志游戏是否才开始
     public BooleanProperty waitForStart;
 
     private final Group messageBox;
 
-    // whether the last finished game is won by the player
+    // 标志pacman是否win
     private final BooleanProperty lastGameResult;
 
-    // text of game winning
+    // 游戏赢的文本
     private final Text gameResultText;
 
     private int flashingCount;
@@ -83,24 +86,28 @@ public class Maze extends Parent {
 
     private final Group group;
 
-    public Maze(MenuBar menuBar) {
+    public Maze(MenuBar menuBar, Stage primaryStg) {
         this.menuBar = menuBar;
-        this.setFocused(true);
+        this.primaryStg = primaryStg;
+        this.setFocused(true);//设置焦点
 
-        gamePaused = new SimpleBooleanProperty(false);
+        gamePaused = new SimpleBooleanProperty(false);//游戏暂停标志位，开始为false
 
-        pacMan = new PacMan(this, 15, 24);
+        pacMan = new PacMan(this, 15, 24);//初始化pacman
 
+        /**
+         * 下面声明了4个ghosts
+         */
         final Ghost ghostBlinky = new Ghost(
                 new Image(getClass().getResourceAsStream("images/ghostred1.png")),
                 new Image(getClass().getResourceAsStream("images/ghostred2.png")),
                 this,
                 pacMan,
-                15, // x
-                14, // y
-                0,  // x Direction
-                -1, // y Direction
-                1); // trap time
+                15,
+                14,
+                0,
+                -1,
+                1);
 
         final Ghost ghostPinky = new Ghost(
                 new Image(getClass().getResourceAsStream("images/ghostpink1.png")),
@@ -109,9 +116,9 @@ public class Maze extends Parent {
                 pacMan,
                 14,
                 15,
-                1,  // x Direction
-                0,  // y Direction
-                5); // trap time
+                1,
+                0,
+                10);
 
         final Ghost ghostInky = new Ghost(
                 new Image(getClass().getResourceAsStream("images/ghostcyan1.png")),
@@ -120,9 +127,9 @@ public class Maze extends Parent {
                 pacMan,
                 12,
                 15,
-                1,   // x Direction
-                0,   // y Direction
-                20); // trap time
+                1,
+                0,
+                20);
 
         final Ghost ghostClyde = new Ghost(
                 new Image(getClass().getResourceAsStream("images/ghostorange1.png")),
@@ -131,9 +138,9 @@ public class Maze extends Parent {
                 pacMan,
                 16,
                 15,
-                1,   // x Direction
-                0,   // y Direction
-                30); // trap time
+                1,
+                0,
+                30);
 
         ghosts = new Ghost[]{ghostBlinky, ghostPinky, ghostInky, ghostClyde};
 
@@ -150,7 +157,8 @@ public class Maze extends Parent {
 
         livesCount = new SimpleIntegerProperty(2);
 
-        // images showing how many lives remaining
+        // 显示pacman还有多少生命剩余的图片
+
         final ImageView livesImage1 = new ImageView(PACMAN_IMAGE);
         livesImage1.setX(MazeData.calcGridX(18));
         livesImage1.setY(MazeData.calcGridYFloat(MazeData.GRID_SIZE_Y + 0.8f));
@@ -167,6 +175,7 @@ public class Maze extends Parent {
         livesImage3.visibleProperty().bind(livesCount.greaterThan(2));
         livesImage3.setCache(true);
         final ImageView[] livesImage = new ImageView[]{livesImage1, livesImage2, livesImage3};
+
 
         level = new SimpleIntegerProperty(1);
         addLifeFlag = true;
@@ -193,16 +202,16 @@ public class Maze extends Parent {
             @Override
             protected String computeValue() {
                 if (gamePaused.get()) {
-                    return " PRESS 'P' BUTTON TO RESUME";
+                    return "   按 P 开始游戏！ ";
                 } else {
-                    return "   PRESS ANY KEY TO START!";
+                    return "   按任意键开始游戏！ ";
                 }
             }
         };
 
         final Text textMessage = new Text(MazeData.calcGridX(6),
                 MazeData.calcGridYFloat(20.5f),
-                "   PRESS ANY KEY TO START!");
+                "    按任意键开始游戏！ ");
         textMessage.textProperty().bind(messageBinding);
         textMessage.setFont(new Font(18));
         textMessage.setFill(Color.RED);
@@ -214,8 +223,6 @@ public class Maze extends Parent {
         final StringBinding lastGameResultBinding = new StringBinding() {
 
             {
-                Label label = (Label) (menuBar.getMenus().get(0).getGraphic());
-                label.setText("开始(P)");
                 super.bind(lastGameResult);
             }
 
@@ -257,7 +264,7 @@ public class Maze extends Parent {
 
         group = new Group();
 
-        // Make big black rectangle to cover entire background
+        // 设置背景矩形
         final Rectangle blackBackground = new Rectangle(0, 0,
                 MazeData.calcGridX(MazeData.GRID_SIZE_X + 2),
                 MazeData.calcGridY(MazeData.GRID_SIZE_Y + 3));
@@ -265,10 +272,9 @@ public class Maze extends Parent {
         blackBackground.setCache(true);
         group.getChildren().add(blackBackground);
 
-        // Inner border of outside wall
+        // 墙壁矩形
         group.getChildren().add(new WallRectangle(0, 0, MazeData.GRID_SIZE_X, MazeData.GRID_SIZE_Y));
 
-        // Top middle vertical wall
         group.getChildren().add(new WallRectangle(14, -0.5f, 15, 4));
         group.getChildren().add(new WallBlackRectangle(13.8f, -1, 15.3f, 0));
 
@@ -278,24 +284,20 @@ public class Maze extends Parent {
         group.getChildren().add(new WallRectangle(24, 2, 27, 4)); // upper-right rectangle
         group.getChildren().add(new WallRectangle(2, 6, 5, 7)); // left-side 2nd from top rectangle
 
-        // middle top T
         group.getChildren().add(new WallRectangle(14, 6, 15, 10));
         group.getChildren().add(new WallRectangle(10, 6, 19, 7));
         group.getChildren().add(new WallBlackLine(14.05f, 7, 14.95f, 7));
 
-        // Upper-left sideways T
         group.getChildren().add(new WallRectangle(7.5f, 9, 12, 10));
         group.getChildren().add(new WallRectangle(7, 6, 8, 13));
         group.getChildren().add(new WallBlackLine(8, 9, 8, 10));
 
-        // Upper-right sideways T
         group.getChildren().add(new WallRectangle(17, 9, 21.5f, 10));
         group.getChildren().add(new WallRectangle(21, 6, 22, 13));
         group.getChildren().add(new WallBlackLine(21, 9, 21, 10));
 
         group.getChildren().add(new WallRectangle(24, 6, 27, 7)); // right-side 2nd from top rectangle
 
-        //cage and the gate
         group.getChildren().add(new WallRectangle(10, 12, 19, 17));
         group.getChildren().add(new WallRectangle(10.5f, 12.5f, 18.5f, 16.5f));
         final Rectangle cageRect = new Rectangle(MazeData.calcGridX(13),
@@ -307,25 +309,20 @@ public class Maze extends Parent {
         cageRect.setCache(true);
         group.getChildren().add(cageRect);
 
-        // Vertical rectangle below left side door
         group.getChildren().add(new WallRectangle(7, 15, 8, 20));
 
-        // Vertical rectangle below right side door
         group.getChildren().add(new WallRectangle(21, 15, 22, 20));
 
-        // middle middle T
         group.getChildren().add(new WallRectangle(14, 19, 15, 23));
         group.getChildren().add(new WallRectangle(10, 19, 19, 20));
         group.getChildren().add(new WallBlackLine(14.05f, 20, 14.95f, 20));
 
-        // left L
         group.getChildren().add(new WallRectangle(4, 22, 5, 26));
         group.getChildren().add(new WallRectangle(2, 22, 5, 23));
         group.getChildren().add(new WallBlackRectangle(4, 22.05f, 5, 23.2f));
 
         group.getChildren().add(new WallRectangle(7, 22, 12, 23)); // left lower horizontal rectangle
 
-        // right L
         group.getChildren().add(new WallRectangle(24, 22, 25, 26));
         group.getChildren().add(new WallRectangle(24, 22, 27, 23));
         group.getChildren().add(new WallBlackRectangle(24, 22.05f, 25, 23.2f));
@@ -393,8 +390,8 @@ public class Maze extends Parent {
 
         final Text textScore = new Text(MazeData.calcGridX(0),
                 MazeData.calcGridY(MazeData.GRID_SIZE_Y + 2),
-                "SCORE: " + pacMan.score);
-        textScore.textProperty().bind(pacMan.score.asString("SCORE: %1d  "));
+                "分数: " + pacMan.score);
+        textScore.textProperty().bind(pacMan.score.asString("分数: %1d  "));
         textScore.setFont(new Font(20));
         textScore.setFill(Color.YELLOW);
         textScore.setCache(true);
@@ -402,18 +399,26 @@ public class Maze extends Parent {
 
         group.getChildren().addAll(SCORE_TEXT);
         group.getChildren().add(dyingPacMan);
+
+        final Text textLife = new Text(MazeData.calcGridX(10), MazeData.calcGridY(MazeData.GRID_SIZE_Y + 2), "生命值：");
+        textLife.textProperty().bind(livesCount.asString("生命值："));
+        textLife.setFont(new Font(20));
+        textLife.setFill(Color.YELLOW);
+        textLife.setCache(true);
+        group.getChildren().add(textLife);
+
         group.getChildren().addAll(livesImage);
         group.getChildren().add(gameResultText);
 
         final Text textLevel = new Text(MazeData.calcGridX(22),
                 MazeData.calcGridY(MazeData.GRID_SIZE_Y + 2),
-                "LEVEL: " + level);
-        textLevel.textProperty().bind(level.asString("LEVEL: %1d "));
+                "级别: " + level);
+        textLevel.textProperty().bind(level.asString("级别: %1d "));
         textLevel.setFont(new Font(20));
         textLevel.setFill(Color.YELLOW);
         textLevel.setCache(true);
         group.getChildren().add(textLevel);
-        group.setFocusTraversable(true); // patweb
+        group.setFocusTraversable(true);
         group.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
             @Override
@@ -422,8 +427,27 @@ public class Maze extends Parent {
             }
         });
 
+        putDots();
 
-        // postinit
+        group.getChildren().add(pacMan);
+
+        group.getChildren().addAll(ghosts);
+
+        group.getChildren().add(new WallBlackRectangle(-2, 13, -0.5f, 15));
+        group.getChildren().add(new WallBlackRectangle(29.5f, 13, 31, 15));
+
+        group.getChildren().add(messageBox);
+
+
+        getChildren().add(group);
+
+        if (DEBUG) {
+            MazeData.printData();
+            MazeData.printDots();
+        }
+    }
+
+    public void putDots() {
         putDotHorizontally(2, 12, 1);
         putDotHorizontally(17, 27, 1);
 
@@ -482,35 +506,30 @@ public class Maze extends Parent {
 
         putDotVertically(13, 27, 30);
         putDotVertically(16, 27, 30);
-
-
-        // insert pacMan into group.content;
-        group.getChildren().add(pacMan);
-
-        // insert ghosts into group.content;
-        group.getChildren().addAll(ghosts);
-
-        // Black-out side door exit points so moving objects disappear at maze borders
-        // insert WallBlackRectangle{ x1:-3, y1:13, x2:0, y2:15} into group.content;
-        // insert WallBlackRectangle{ x1:29, y1:13, x2:31, y2:15} into group.content;
-        group.getChildren().add(new WallBlackRectangle(-2, 13, -0.5f, 15));
-        group.getChildren().add(new WallBlackRectangle(29.5f, 13, 31, 15));
-
-        // insert messageBox into group.content;
-        group.getChildren().add(messageBox);
-
-        // end postinit
-
-        getChildren().add(group);
-
-        if (DEBUG) {
-            MazeData.printData();
-            MazeData.printDots();
-        }
     }
 
 
+    public void setOuterFocus(boolean flag) {
+        this.setFocused(flag);
+    }
+
     public void onKeyPressed(KeyEvent e) {
+
+        if (e.getCode() == KeyCode.E) {
+            primaryStg.close();
+        }
+
+        if (e.getCode() == KeyCode.N) {
+            Label labelPause = (Label) (menuBar.getMenus().get(0).getGraphic());
+            labelPause.setText("开始(P)");
+            if (waitForStart.get())
+                return;
+            startNewGame();
+            pauseGame();
+            waitForStart.set(true);
+            gamePaused.set(false);
+            return;
+        }
 
         // wait for the player's keyboard input to start the game
         if (waitForStart.get()) {
@@ -742,6 +761,7 @@ public class Maze extends Parent {
             return;
         }
 
+        System.out.println("pause Game");
         messageBox.setVisible(true);
 
         for (Ghost g : ghosts) {
@@ -749,6 +769,7 @@ public class Maze extends Parent {
                 g.pause();
             }
         }
+        System.out.println("pause Game ghosts");
 
         if (pacMan.isRunning()) {
             pacMan.pause();

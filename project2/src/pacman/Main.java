@@ -16,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TouchPoint;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -59,7 +60,7 @@ public class Main extends Application {
 
         root.getChildren().add(menuBar);
 
-        maze = new Maze(menuBar);
+        maze = new Maze(menuBar, primaryStage);
         maze.setLayoutX(0);
         maze.setLayoutY(barHeight);
         root.getChildren().add(maze);
@@ -68,7 +69,8 @@ public class Main extends Application {
     }
 
     private void pauseClick() {
-
+//        menuBar.setFocusTraversable(false);
+//        maze.setOuterFocus(true);
         Label labelPause = (Label) (menuBar.getMenus().get(0).getGraphic());
         if (firstStart && maze.waitForStart.get()) {
             firstStart = false;
@@ -96,6 +98,7 @@ public class Main extends Application {
         Label labelPlayAgain = new Label("重玩(N)");
         Label labelSave = new Label("存档(X)");
         Label labelRead = new Label("读档(R)");
+        Label labelScore = new Label("排行榜(T)");
         Label labelHelp = new Label("帮助(H)");
         Label labelExit = new Label("退出(E)");
 
@@ -105,13 +108,6 @@ public class Main extends Application {
                 pauseClick();
             }
         });
-
-//        labelPause.setOnKeyTyped(new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
-//                System.out.println("keyType Hello");
-//            }
-//        });
 
         labelPause.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -146,6 +142,7 @@ public class Main extends Application {
         labelSave.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                System.out.println("Menu Save");
 
             }
         });
@@ -154,6 +151,13 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
 
+            }
+        });
+
+        labelScore.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                ScoreDialog score = new ScoreDialog(primeStage);
             }
         });
 
@@ -187,7 +191,9 @@ public class Main extends Application {
         menuExit.setGraphic(labelExit);
         Menu menuHelp = new Menu();
         menuHelp.setGraphic(labelHelp);
-        menuBar.getMenus().addAll(menuPause, menuPalyAgain, menuSave, menuRead, menuHelp, menuExit);
+        Menu menuScore = new Menu();
+        menuScore.setGraphic(labelScore);
+        menuBar.getMenus().addAll(menuPause, menuPalyAgain, menuSave, menuRead, menuScore, menuHelp, menuExit);
 //        menuBar.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 //            @Override
 //            public void handle(KeyEvent event) {
@@ -199,10 +205,6 @@ public class Main extends Application {
     }
 
     private void PlayAgainClick() {
-//        maze = new Maze(menuBar);
-//        maze.setLayoutX(0);
-//        maze.setLayoutY(barHeight);
-//        root.getChildren().add(maze);
         if (maze.waitForStart.get()) {
             return;
         }

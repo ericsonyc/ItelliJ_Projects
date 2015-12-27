@@ -6,6 +6,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.MenuBar;
 import javafx.scene.shape.Arc;
 import javafx.util.Duration;
 
@@ -31,7 +32,7 @@ public class DyingPacMan extends Arc {
                                     g.hide();
                                 }
 
-                                setVisible(true);
+                                DyingPacMan.this.setVisible(true);
                             }
 
                         },
@@ -40,7 +41,7 @@ public class DyingPacMan extends Arc {
                 );
 
         KeyFrame kf2 =
-                new KeyFrame(Duration.millis(1800),
+                new KeyFrame(Duration.millis(1500),
                         new EventHandler<ActionEvent>() {
 
                             @Override

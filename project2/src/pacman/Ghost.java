@@ -8,9 +8,12 @@ public class Ghost extends MovingObject {
 
     private static final int TRAPPED = 10;
 
-    // the pacman character
+    //pacman对象
     private final PacMan pacMan;
 
+    /**
+     * HOLLOW_IMAGE1,HOLLOW_IMAGE2,HOLLOW_IMAGE3保存了pacman吃了大力丸后的ghost变身图片
+     */
     private static final Image HOLLOW_IMAGE1 = new Image(Ghost.class.getResourceAsStream("images/ghosthollow2.png"));
 
     private static final Image HOLLOW_IMAGE2 = new Image(Ghost.class.getResourceAsStream("images/ghosthollow3.png"));
@@ -24,6 +27,7 @@ public class Ghost extends MovingObject {
             HOLLOW_IMAGE2
     };
 
+    //FLASH_HOLLOW_IMG保存了Ghost大力丸效果消失后图片闪烁的结果，提示用户药力快要消失
     private static final Image[] FLASH_HOLLOW_IMG = new Image[]{
             HOLLOW_IMAGE1,
             HOLLOW_IMAGE3,
@@ -31,31 +35,30 @@ public class Ghost extends MovingObject {
             HOLLOW_IMAGE3
     };
 
-    // time for a ghost to stay hollow
-    private static final int HOLLOW_MAX_TIME = 80;
+    //设置大力丸的时间
+    private static final int HOLLOW_MAX_TIME = 60;
 
-    private int hollowCounter;
+    private int hollowCounter;//设置变身的个数
 
-    private final Image[] defaultImg;
+    private final Image[] defaultImg;//默认Image数组
 
-    // initial direction and position of a ghost, used in status reset
+    //初始化ghost地点和方向
     private final int initialLocationX;
     private final int initialLocationY;
     private final int initialDirectionX;
     private final int initialDirectionY;
 
-    // time to stay in the cage
+    //ghosts关闭在笼子里的时间
     private final int trapTime;
-    public int trapCounter; // = 0;
+    public int trapCounter; //被关在笼子里ghosts的数量
 
-    // variables to determine if a ghost should chase pacman,
-    // and the probability
+    //ghost追逐pacman的可能性有多大
     private static final double CHANGE_FACTOR = 0.75;
     private static final double CHASE_FACTOR = 0.5;
-    private int chaseCount; // = 0;
+    private int chaseCount; //追逐pacman的ghosts个数
 
-    // the flag is set if a ghost becomes hollow
-    public boolean isHollow; // = false;
+    // ghost是否受大力丸影响标志
+    public boolean isHollow;
 
     public Ghost(Image defaultImage1,
                  Image defaultImage2,
@@ -87,7 +90,7 @@ public class Ghost extends MovingObject {
 
         trapCounter = 0;
 
-        // postinit block
+        // 初始化ghost图片
         initialLocationX = x;
         initialLocationY = y;
         initialDirectionX = xDirection;
@@ -102,7 +105,7 @@ public class Ghost extends MovingObject {
         ghostNode.imageProperty().bind(imageBinding);
         ghostNode.setCache(true);
 
-        getChildren().add(ghostNode);
+        this.getChildren().add(ghostNode);
     }
 
     // reset the status of a ghost and place it into the cage
@@ -127,8 +130,8 @@ public class Ghost extends MovingObject {
 
         timeline.setRate(1.0);
 
-        setVisible(true);
-        start();
+        this.setVisible(true);
+        this.start();
     }
 
     public void changeToHollowGhost() {
