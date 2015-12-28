@@ -1,5 +1,9 @@
 package pacman;
 
+import javafx.scene.image.Image;
+
+import java.io.*;
+
 public final class MazeData {
 
     public static final int BLOCK = 1;
@@ -11,7 +15,7 @@ public final class MazeData {
     public static final int BIG_DOT = 3;
     public static final int NORMAL_DOT = 2;
 
-    private static final Object[][] DOT_POINTERS = new Object[GRID_SIZE_X + 1][GRID_SIZE_Y + 1];
+    public static final Object[][] DOT_POINTERS = new Object[GRID_SIZE_X + 1][GRID_SIZE_Y + 1];
     private static final int[][] MAZE_DATA = new int[GRID_SIZE_X + 1][GRID_SIZE_Y + 1];
     private static final int X_OFFSET = GRID_GAP * 2;
     private static final int Y_OFFSET = GRID_GAP * 2;
@@ -106,6 +110,106 @@ public final class MazeData {
         }
     }
 
+    public static void saveData(String filename, Maze maze) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+            String save = maze.saveMaze();
+            bw.write(save);
+            bw.newLine();
+            bw.flush();
+            StringBuilder sb = new StringBuilder("");
+            for (int i = 0; i <= GRID_SIZE_Y; i++) {
+                sb.delete(0, sb.length());
+                for (int j = 0; j <= GRID_SIZE_X; j++) {
+                    if (null != DOT_POINTERS[j][i]) {
+                        sb.append(((Dot) DOT_POINTERS[j][i]).isVisible() + ",");
+                    } else {
+                        sb.append(",");
+                    }
+                }
+                sb.deleteCharAt(sb.length() - 1);
+                bw.write(sb.toString());
+                bw.newLine();
+                bw.flush();
+            }
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readData(String filename, Maze maze) {
+        maze.setMaze(filename);
+    }
+
+//    public static void saveData(String filename) {
+//        try {
+//            RandomAccessFile randomFile = new RandomAccessFile(filename, "rw");
+//            StringBuilder sb = new StringBuilder("");
+//            for (int i = 0; i <= GRID_SIZE_Y; i++) {
+//                sb.delete(0, sb.length());
+//                for (int j = 0; j <= GRID_SIZE_X; j++) {
+//                    sb.append(MAZE_DATA[j][i] + ",");
+//                }
+//                sb.deleteCharAt(sb.length() - 1);
+//                randomFile.writeChars(sb.toString() + "\n");
+//            }
+//            randomFile.close();
+//
+////            saveDots(filename);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static void saveDots(String filename) {
+//        try {
+//            RandomAccessFile randomFile = new RandomAccessFile(filename, "rw");
+//            StringBuilder sb = new StringBuilder("");
+//            randomFile.seek(randomFile.length());
+//            for (int i = 0; i <= GRID_SIZE_Y; i++) {
+//                sb.delete(0, sb.length());
+//                for (int j = 0; j <= GRID_SIZE_X; j++) {
+//                    if (null != DOT_POINTERS[j][i]) {
+//                        sb.append(((Dot) DOT_POINTERS[j][i]).dotType + ",");
+//                    } else {
+//                        sb.append("-1,");
+//                    }
+//                }
+//                sb.deleteCharAt(sb.length() - 1);
+//                randomFile.writeChars(sb.toString() + "\n");
+//            }
+//            randomFile.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    public static void operateDots(){
+//        for (int i = 0; i <= GRID_SIZE_Y; i++) {
+//            for (int j = 0; j <= GRID_SIZE_X; j++) {
+//                if (null != DOT_POINTERS[j][i]) {
+//                    ((Dot) DOT_POINTERS[j][i]).setVisible(true);
+//                } else {
+//                    System.out.print("  ");
+//                }
+//            }
+//        }
+//    }
+
+//    public static void operateGhosts(Maze maze){
+//        final Ghost ghostInky = new Ghost(
+//                new Image(maze.getClass().getResourceAsStream("images/ghosthollow2.png")),
+//                new Image(maze.getClass().getResourceAsStream("images/ghosthollow3.png")),
+//                maze,
+//                maze.pacMan,
+//                12,
+//                15,
+//                1,
+//                0,
+//                20);
+//    }
+
     public static void printDots() {
         for (int i = 0; i <= GRID_SIZE_Y; i++) {
             for (int j = 0; j <= GRID_SIZE_X; j++) {
@@ -119,4 +223,28 @@ public final class MazeData {
         }
     }
 
+//    public static void readData1(String filename, Maze maze) {
+//        try {
+//            String[] strs = null;
+//            RandomAccessFile random = new RandomAccessFile(filename, "r");
+//            for (int i = 0; i <= GRID_SIZE_Y; i++) {
+//                strs = random.readLine().split(",");
+//                for (int j = 0; j <= GRID_SIZE_X; j++) {
+//                    MAZE_DATA[j][i] = Integer.parseInt(strs[j].trim());
+//                }
+//            }
+//            for (int i = 0; i <= GRID_SIZE_Y; i++) {
+//                strs = random.readLine().split(",");
+//                for (int j = 0; j <= GRID_SIZE_X; j++) {
+//                    if (null != DOT_POINTERS[j][i]) {
+//                        ((Dot) DOT_POINTERS[j][i]).dotType = Integer.parseInt(strs[j].trim());
+//                    } else {
+//                    }
+//                }
+//            }
+//            random.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

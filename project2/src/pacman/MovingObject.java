@@ -43,7 +43,7 @@ public abstract class MovingObject extends Parent {//移动物体的父类
     protected int xDirection;//x方向
     protected int yDirection;//y方向
 
-    protected Timeline timeline;
+    public Timeline timeline;
 
     public MovingObject() {
         currentImage = new SimpleIntegerProperty(0);

@@ -4,7 +4,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class Ghost extends MovingObject {
+import java.io.Serializable;
+
+public class Ghost extends MovingObject implements Serializable {
 
     private static final int TRAPPED = 10;
 
@@ -106,6 +108,37 @@ public class Ghost extends MovingObject {
         ghostNode.setCache(true);
 
         this.getChildren().add(ghostNode);
+    }
+
+    public void setStatus(String[] strs) {
+        int i = 0;
+        x = Integer.parseInt(strs[i++]);
+        y = Integer.parseInt(strs[i++]);
+        xDirection = Integer.parseInt(strs[i++]);
+        yDirection = Integer.parseInt(strs[i++]);
+        isHollow = Boolean.parseBoolean(strs[i++]);
+        moveCounter = Integer.parseInt(strs[i++]);
+        trapCounter = Integer.parseInt(strs[i++]);
+        currentImage.set(Integer.parseInt(strs[i++]));
+        imageX.set(Integer.parseInt(strs[i++]));
+        imageY.set(Integer.parseInt(strs[i++]));
+        state = Integer.parseInt(strs[i]);
+    }
+
+    public String preseveStatus() {
+        StringBuilder sb = new StringBuilder("");
+        sb.append(x + ",");
+        sb.append(y + ",");
+        sb.append(xDirection + ",");
+        sb.append(yDirection + ",");
+        sb.append(isHollow + ",");
+        sb.append(moveCounter + ",");
+        sb.append(trapCounter + ",");
+        sb.append(currentImage.get() + ",");
+        sb.append(imageX.get() + ",");
+        sb.append(imageY.get() + ",");
+        sb.append(state);
+        return sb.toString();
     }
 
     // reset the status of a ghost and place it into the cage

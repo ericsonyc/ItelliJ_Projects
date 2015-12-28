@@ -1,6 +1,7 @@
 package pacman;
 
 import javafx.animation.Animation;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
@@ -359,6 +360,37 @@ public class PacMan extends MovingObject {
 
         setVisible(true); // patweb: Added because Pac-Man is invisible at start of new life.
         start();
+    }
+
+    public String preservePacman() {
+        StringBuilder sb = new StringBuilder("");
+        sb.append(state + ",");
+        sb.append(currentDirection.get() + ",");
+        sb.append(xDirection + ",");
+        sb.append(yDirection + ",");
+        sb.append(currentImage.get() + ",");
+        sb.append(moveCounter + ",");
+        sb.append(x + ",");
+        sb.append(y + ",");
+        sb.append(imageX.get() + ",");
+        sb.append(imageY.get() + ",");
+        sb.append(score.get());
+        return sb.toString();
+    }
+
+    public void setPacmanStatus(String[] values) {
+        int i = 0;
+        state = Integer.parseInt(values[i++]);
+        currentDirection.set(Integer.parseInt(values[i++]));
+        xDirection = Integer.parseInt(values[i++]);
+        yDirection = Integer.parseInt(values[i++]);
+        currentImage.set(Integer.parseInt(values[i++]));
+        moveCounter = Integer.parseInt(values[i++]);
+        x = Integer.parseInt(values[i++]);
+        y = Integer.parseInt(values[i++]);
+        imageX.set(Integer.parseInt(values[i++]));
+        imageY.set(Integer.parseInt(values[i++]));
+        score.set(Integer.parseInt(values[i++]));
     }
 
 }

@@ -6,6 +6,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.shape.Arc;
 import javafx.util.Duration;
@@ -47,6 +49,8 @@ public class DyingPacMan extends Arc {
                             @Override
                             public void handle(ActionEvent event) {
                                 setVisible(false);
+//                                Label label=(Label) (maze.menuBar.getMenus().get(0).getGraphic());
+//                                label.setText("开始(P)");
                                 maze.startNewLife();
                             }
 

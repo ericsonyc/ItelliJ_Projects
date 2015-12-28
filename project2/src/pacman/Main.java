@@ -19,8 +19,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sun.rmi.runtime.Log;
+
+import java.io.File;
 
 public class Main extends Application {
 
@@ -51,7 +54,7 @@ public class Main extends Application {
 
         double width = MazeData.calcGridX(MazeData.GRID_SIZE_X + 2) + 14;
         menuBar = getMenuBar(width, barHeight);
-        double height = MazeData.calcGridY(MazeData.GRID_SIZE_Y + 4) + barHeight + 15;
+        double height = MazeData.calcGridY(MazeData.GRID_SIZE_Y + 4) + barHeight + 23;
 
         primaryStage.setWidth(width);
         primaryStage.setHeight(height);
@@ -143,14 +146,28 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("Menu Save");
-
+                maze.pauseGame();
+                if (maze.waitForStart.get()) {
+                    SaveDialog dialog = new SaveDialog(primeStage);
+                    return;
+                }
+                FileChooser chooser = new FileChooser();
+                File file = chooser.showSaveDialog(primeStage);
+                if (file != null)
+                    MazeData.saveData(file.getAbsolutePath(), maze);
             }
         });
 
         labelRead.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
+                maze.pauseGame();
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showOpenDialog(primeStage);
+                if (file != null) {
+                    MazeData.readData(file.getAbsolutePath(), maze);
+//                    file.delete();
+                }
             }
         });
 
@@ -213,6 +230,7 @@ public class Main extends Application {
         firstStart = true;
         pauseFlag = true;
         maze.startNewGame();
+        maze.gamePaused.set(false);
         maze.pauseGame();
         maze.waitForStart.set(true);
         maze.gamePaused.set(false);

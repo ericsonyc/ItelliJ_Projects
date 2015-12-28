@@ -25,8 +25,11 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.*;
 
 
 public class Maze extends Parent {
@@ -36,7 +39,7 @@ public class Maze extends Parent {
     // 吃掉ghosts的数量
     private int ghostEatenCount;
 
-    private MenuBar menuBar;
+    public MenuBar menuBar;
 
     private Stage primaryStg;
 
@@ -253,6 +256,10 @@ public class Maze extends Parent {
             @Override
             public void handle(ActionEvent event) {
                 gameResultText.setVisible(!gameResultText.isVisible());
+                if (gameResultText.isVisible()) {
+                    Label label = (Label) menuBar.getMenus().get(0).getGraphic();
+                    label.setText("开始(P)");
+                }
                 if (++flashingCount == 5) {
                     messageBox.setVisible(true);
                     waitForStart.set(true);
@@ -447,6 +454,54 @@ public class Maze extends Parent {
         }
     }
 
+    public String saveMaze() {
+        StringBuilder sb = new StringBuilder();
+        for (Ghost ghost : ghosts) {
+            sb.append(ghost.preseveStatus() + '\n');
+        }
+        sb.append(pacMan.preservePacman() + "\n");
+        sb.append(level.get() + "\n");
+        sb.append(livesCount.get());
+        return sb.toString();
+    }
+
+    public void setMaze(String filename) {
+        try {
+            this.startNewGame();
+            this.pauseGame();
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            for (Ghost ghost : ghosts) {
+                String[] value = br.readLine().split(",");
+                ghost.setStatus(value);
+                ghost.start();
+            }
+            String[] value = br.readLine().split(",");
+            pacMan.setPacmanStatus(value);
+            pacMan.setKeyboardBuffer(-1);
+            pacMan.start();
+            messageBox.setVisible(true);
+            String str = br.readLine().trim();
+            level.set(Integer.parseInt(str));
+            str = br.readLine().trim();
+            livesCount.set(Integer.parseInt(str));
+            for (int i = 0; i <= MazeData.GRID_SIZE_Y; i++) {
+                value = br.readLine().split(",");
+                for (int j = 0; j <= MazeData.GRID_SIZE_X; j++) {
+                    if (null != MazeData.DOT_POINTERS[j][i]) {
+                        ((Dot) MazeData.DOT_POINTERS[j][i]).setVisible(Boolean.parseBoolean(value[j]));
+                    } else {
+
+                    }
+                }
+            }
+            br.close();
+            this.waitForStart.set(false);
+            this.pauseGame();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void putDots() {
         putDotHorizontally(2, 12, 1);
         putDotHorizontally(17, 27, 1);
@@ -529,6 +584,29 @@ public class Maze extends Parent {
             waitForStart.set(true);
             gamePaused.set(false);
             return;
+        }
+
+        if (e.getCode() == KeyCode.X) {
+            if (waitForStart.get()) {
+                SaveDialog dialog = new SaveDialog(primaryStg);
+                return;
+            }
+            pauseGame();
+            FileChooser chooser = new FileChooser();
+            File file = chooser.showSaveDialog(primaryStg);
+            if (file != null)
+                MazeData.saveData(file.getAbsolutePath(), this);
+            pauseGame();
+        }
+
+        if (e.getCode() == KeyCode.R) {
+            pauseGame();
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(primaryStg);
+            if (file != null) {
+                MazeData.readData(file.getAbsolutePath(), this);
+//                file.delete();
+            }
         }
 
         // wait for the player's keyboard input to start the game
@@ -839,7 +917,8 @@ public class Maze extends Parent {
 
     // reset status and start a new life
     public void startNewLife() {
-
+//        Label label=(Label)menuBar.getMenus().get(0).getGraphic();
+//        label.setText("暂停(P)");
         // reduce a life of Pac-Man
         if (livesCount.get() > 0) {
             livesCount.set(livesCount.get() - 1);

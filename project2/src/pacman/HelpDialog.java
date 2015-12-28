@@ -62,6 +62,7 @@ public class HelpDialog {
                 while ((temp = br.readLine()) != null) {
                     sb.append(temp + "\n");
                 }
+                br.close();
                 result = sb.toString();
             } catch (Exception e) {
                 e.printStackTrace();
