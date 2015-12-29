@@ -21,13 +21,13 @@ public class SaveDialog {
     private double width;
     private double height;
 
-    public SaveDialog(final Stage stg) {
+    public SaveDialog(final Stage stg, String text) {
         width = 300;
         height = 100;
         final Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(stg);
-        stage.setTitle("Save");
+        stage.setTitle("提示框");
         Group root = new Group();
         AnchorPane anchorPane = new AnchorPane();
         area = new TextArea();
@@ -39,7 +39,7 @@ public class SaveDialog {
         System.out.println(area.getWidth());
         System.out.println(area.getHeight());
         Scene scene = new Scene(root, width, height);
-        area.setText("请开始游戏后，再保存进度！！！");
+        area.setText(text);
         anchorPane.getChildren().add(area);
         root.getChildren().add(anchorPane);
         stage.setScene(scene);

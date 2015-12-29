@@ -7,10 +7,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -148,7 +145,7 @@ public class Main extends Application {
                 System.out.println("Menu Save");
                 maze.pauseGame();
                 if (maze.waitForStart.get()) {
-                    SaveDialog dialog = new SaveDialog(primeStage);
+                    SaveDialog dialog = new SaveDialog(primeStage, "请开始游戏后，再保存进度！！！");
                     return;
                 }
                 FileChooser chooser = new FileChooser();
@@ -174,7 +171,7 @@ public class Main extends Application {
         labelScore.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                ScoreDialog score = new ScoreDialog(primeStage);
+                maze.getTopScores();
             }
         });
 

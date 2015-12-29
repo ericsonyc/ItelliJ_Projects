@@ -1,21 +1,24 @@
 package pacman;
 
-//import javafx.scene.CustomNode;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -30,6 +33,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 
 public class Maze extends Parent {
@@ -44,6 +49,7 @@ public class Maze extends Parent {
     private Stage primaryStg;
 
     public BooleanProperty gamePaused;//游戏暂停标志
+
 
     //吃掉一个ghost显示的分数文本
     private static final ScoreText[] SCORE_TEXT = {
@@ -259,16 +265,26 @@ public class Maze extends Parent {
                 if (gameResultText.isVisible()) {
                     Label label = (Label) menuBar.getMenus().get(0).getGraphic();
                     label.setText("开始(P)");
+
                 }
                 if (++flashingCount == 5) {
                     messageBox.setVisible(true);
                     waitForStart.set(true);
+                    if (!lastGameResult.get() && pacMan.score.get() > MazeData.queue.get(0).getScore()) {
+                        NameDialog dialog = new NameDialog(primaryStg, Maze.this);
+                    }
                 }
             }
 
         });
         flashingTimeline.getKeyFrames().add(kf);
-
+//        flashingTimeline.setOnFinished(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                handleEvent(event);
+//
+//            }
+//        });
         group = new Group();
 
         // 设置背景矩形
@@ -454,6 +470,58 @@ public class Maze extends Parent {
         }
     }
 
+    public void handleEvent(String name) {
+
+//            NameDialog dialog = new NameDialog(primaryStg,this);
+//            TextInputDialog textInputDialog = new TextInputDialog("Name");
+//            textInputDialog.setTitle("用户框");
+//            textInputDialog.setContentText("请输入姓名?");
+//            textInputDialog.show();
+        insertQueue(name, pacMan.score.get());
+//        System.out.println("hello");
+//                        Optional<String> opt=textInputDialog.showAndWait();
+//                        String rtn;
+//                        try{
+//                            rtn=opt.get();
+//                            if(rtn!=null){
+//
+//                                System.out.println("currentName:" + MazeData.currentName);
+//                            }
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+
+
+    }
+
+    public void insertQueue(String name, int score) {
+        TopScore top = new TopScore(name, score);
+        int index = MazeData.queue.indexOf(top);
+        if (index != -1) {
+            MazeData.queue.set(index, top);
+            int i = index + 1;
+            for (; i < MazeData.queue.size(); i++) {
+                if (top.getScore() > MazeData.queue.get(i).getScore()) {
+                    MazeData.queue.set(i - 1, MazeData.queue.get(i));
+                } else {
+                    break;
+                }
+            }
+            MazeData.queue.set(i - 1, top);
+        } else {
+            int i = 1;
+            for (; i < MazeData.queue.size(); i++) {
+                if (top.getScore() > MazeData.queue.get(i).getScore()) {
+                    MazeData.queue.set(i - 1, MazeData.queue.get(i));
+                } else {
+                    break;
+                }
+            }
+            MazeData.queue.set(i - 1, top);
+        }
+    }
+
+
     public String saveMaze() {
         StringBuilder sb = new StringBuilder();
         for (Ghost ghost : ghosts) {
@@ -568,6 +636,16 @@ public class Maze extends Parent {
         this.setFocused(flag);
     }
 
+    public void getTopScores() {
+        if (!waitForStart.get() || gameResultText.isVisible())
+            pauseGame();
+        if (MazeData.queue.get(MazeData.queue.size() - 1).getScore() == 0) {
+            SaveDialog dialog = new SaveDialog(primaryStg, "还没有用户成绩，请继续！！！");
+        } else {
+            ScoreDialog score = new ScoreDialog(primaryStg);
+        }
+    }
+
     public void onKeyPressed(KeyEvent e) {
 
         if (e.getCode() == KeyCode.E) {
@@ -588,7 +666,7 @@ public class Maze extends Parent {
 
         if (e.getCode() == KeyCode.X) {
             if (waitForStart.get()) {
-                SaveDialog dialog = new SaveDialog(primaryStg);
+                SaveDialog dialog = new SaveDialog(primaryStg, "请开始游戏后，再保存进度！！！");
                 return;
             }
             pauseGame();
@@ -607,6 +685,20 @@ public class Maze extends Parent {
                 MazeData.readData(file.getAbsolutePath(), this);
 //                file.delete();
             }
+        }
+
+        if (e.getCode() == KeyCode.T) {
+            getTopScores();
+            return;
+        }
+
+        if (e.getCode() == KeyCode.H) {
+            if (waitForStart.get() || gameResultText.isVisible()) {
+                HelpDialog dialog = new HelpDialog(primaryStg);
+                return;
+            }
+            pauseGame();
+            HelpDialog dialog = new HelpDialog(primaryStg);
         }
 
         // wait for the player's keyboard input to start the game
@@ -656,7 +748,7 @@ public class Maze extends Parent {
         if (type == MazeData.BIG_DOT) {
             d.playTimeline();
 
-            d.shouldStopAnimation.bind(gamePaused.or(waitForStart)); // patweb
+            d.shouldStopAnimation.bind(gamePaused.or(waitForStart));
         }
 
         // set the dot type in data model

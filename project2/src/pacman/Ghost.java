@@ -38,9 +38,9 @@ public class Ghost extends MovingObject implements Serializable {
     };
 
     //设置大力丸的时间
-    private static final int HOLLOW_MAX_TIME = 60;
+    private static final int HOLLOW_MAX_TIME = 70;
 
-    private int hollowCounter;//设置变身的个数
+    private int hollowCounter = 0;//设置变身的个数
 
     private final Image[] defaultImg;//默认Image数组
 
@@ -122,7 +122,26 @@ public class Ghost extends MovingObject implements Serializable {
         currentImage.set(Integer.parseInt(strs[i++]));
         imageX.set(Integer.parseInt(strs[i++]));
         imageY.set(Integer.parseInt(strs[i++]));
-        state = Integer.parseInt(strs[i]);
+        state = Integer.parseInt(strs[i++]);
+        trapCounter = Integer.parseInt(strs[i++]);
+        chaseCount = Integer.parseInt(strs[i++]);
+        hollowCounter = Integer.parseInt(strs[i]);
+        if (isHollow) {
+            this.images = HOLLOW_IMG;
+            if (hollowCounter == HOLLOW_MAX_TIME - 30) {
+                images = FLASH_HOLLOW_IMG;
+            } else if (hollowCounter > HOLLOW_MAX_TIME) {
+                isHollow = false;
+                images = defaultImg;
+                timeline.stop();
+                timeline.setRate(1.0);
+                timeline.play();
+            }
+        } else {
+            this.images = defaultImg;
+        }
+        System.out.println("isHollow:" + isHollow);
+        System.out.println("hollowCounter:" + hollowCounter);
     }
 
     public String preseveStatus() {
@@ -137,7 +156,10 @@ public class Ghost extends MovingObject implements Serializable {
         sb.append(currentImage.get() + ",");
         sb.append(imageX.get() + ",");
         sb.append(imageY.get() + ",");
-        sb.append(state);
+        sb.append(state + ",");
+        sb.append(trapCounter + ",");
+        sb.append(chaseCount + ",");
+        sb.append(hollowCounter);
         return sb.toString();
     }
 

@@ -19,7 +19,7 @@ public class WallBlackRectangle extends Parent {
         rectangle.setArcHeight(3);
         rectangle.setCache(true);
 
-        getChildren().add(rectangle); // patweb
+        getChildren().add(rectangle);
     }
 
 }

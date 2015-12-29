@@ -21,7 +21,7 @@ public class ScoreText extends Parent {
 
     private Timeline timeline;
 
-    public ScoreText(String s, boolean isVisible) { //patweb
+    public ScoreText(String s, boolean isVisible) {
         text = new Text(s);
         text.setFont(SCORE_FONT);
         text.setFill(SCORE_FILL);

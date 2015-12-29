@@ -1,7 +1,11 @@
 package pacman;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -10,14 +14,15 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ericson on 2015/12/27 0027.
  */
-public class ScoreDialog {
+public class ScoreDialog extends Dialog {
 
-    private String filename = "./about.txt";
-    private TextArea area = null;
+    private ListView<String> listView = null;
     private double width;
     private double height;
 
@@ -27,23 +32,33 @@ public class ScoreDialog {
         final Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(stg);
-        stage.setTitle("About");
+        stage.setTitle("Top Scores");
         Group root = new Group();
         AnchorPane anchorPane = new AnchorPane();
-        area = new TextArea();
-//        area.setPrefColumnCount(30);
-        area.setEditable(false);
-        area.setWrapText(true);
-        area.setPrefWidth(width);
-        area.setPrefHeight(height);
-        System.out.println(area.getWidth());
-        System.out.println(area.getHeight());
+        listView = new ListView<String>();
+        listView.setPrefWidth(width);
+        listView.setPrefHeight(height);
+        listView.setEditable(false);
+        List<String> list = getList();
+        ObservableList<String> items = FXCollections.observableArrayList(list);
+        listView.setItems(items);
         Scene scene = new Scene(root, width, height);
-        area.setText(getHelp(filename));
-        anchorPane.getChildren().add(area);
+        anchorPane.getChildren().add(listView);
         root.getChildren().add(anchorPane);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private List<String> getList() {
+        List<String> list = new ArrayList<String>();
+        for (int i = MazeData.queue.size() - 1; i >= 0; i--) {
+            TopScore top = MazeData.queue.get(i);
+            if (top.getScore() > 0)
+                list.add("姓名：" + top.getName() + "   得分：" + top.getScore());
+            else
+                break;
+        }
+        return list;
     }
 
     private String getHelp(String filename) {

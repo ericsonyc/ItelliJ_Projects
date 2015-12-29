@@ -1,8 +1,13 @@
 package pacman;
 
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public final class MazeData {
 
@@ -21,6 +26,13 @@ public final class MazeData {
     private static final int Y_OFFSET = GRID_GAP * 2;
 
     private static int dotTotal = 0;
+
+    public static List<TopScore> queue = new ArrayList<TopScore>(5);//保存5个最高分数
+
+    static {
+        for (int i = 0; i < 5; i++)
+            queue.add(new TopScore("", 0));
+    }
 
     /**
      * Private constructor to prevent instantiation.

@@ -358,7 +358,7 @@ public class PacMan extends MovingObject {
         imageX.set(MazeData.calcGridX(x));
         imageY.set(MazeData.calcGridY(y));
 
-        setVisible(true); // patweb: Added because Pac-Man is invisible at start of new life.
+        setVisible(true);
         start();
     }
 
@@ -374,7 +374,8 @@ public class PacMan extends MovingObject {
         sb.append(y + ",");
         sb.append(imageX.get() + ",");
         sb.append(imageY.get() + ",");
-        sb.append(score.get());
+        sb.append(score.get() + ",");
+        sb.append(dotEatenCount);
         return sb.toString();
     }
 
@@ -391,6 +392,7 @@ public class PacMan extends MovingObject {
         imageX.set(Integer.parseInt(values[i++]));
         imageY.set(Integer.parseInt(values[i++]));
         score.set(Integer.parseInt(values[i++]));
+        dotEatenCount = Integer.parseInt(values[i]);
     }
 
 }
