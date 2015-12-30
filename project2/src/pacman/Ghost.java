@@ -140,8 +140,8 @@ public class Ghost extends MovingObject implements Serializable {
         } else {
             this.images = defaultImg;
         }
-        System.out.println("isHollow:" + isHollow);
-        System.out.println("hollowCounter:" + hollowCounter);
+//        System.out.println("isHollow:" + isHollow);
+//        System.out.println("hollowCounter:" + hollowCounter);
     }
 
     public String preseveStatus() {

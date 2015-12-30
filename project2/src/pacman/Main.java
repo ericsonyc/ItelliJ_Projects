@@ -163,7 +163,7 @@ public class Main extends Application {
                 File file = fileChooser.showOpenDialog(primeStage);
                 if (file != null) {
                     MazeData.readData(file.getAbsolutePath(), maze);
-//                    file.delete();
+                    file.delete();
                 }
             }
         });

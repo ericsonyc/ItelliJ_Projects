@@ -683,7 +683,7 @@ public class Maze extends Parent {
             File file = fileChooser.showOpenDialog(primaryStg);
             if (file != null) {
                 MazeData.readData(file.getAbsolutePath(), this);
-//                file.delete();
+                file.delete();
             }
         }
 
