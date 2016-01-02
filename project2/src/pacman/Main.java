@@ -99,6 +99,7 @@ public class Main extends Application {
         Label labelSave = new Label("存档(X)");
         Label labelRead = new Label("读档(R)");
         Label labelScore = new Label("排行榜(T)");
+        Label labelDefination = new Label("自定义鬼(G)");
         Label labelHelp = new Label("帮助(H)");
         Label labelExit = new Label("退出(E)");
 
@@ -175,6 +176,13 @@ public class Main extends Application {
             }
         });
 
+        labelDefination.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                maze.getCustomize();
+            }
+        });
+
         labelHelp.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -207,7 +215,9 @@ public class Main extends Application {
         menuHelp.setGraphic(labelHelp);
         Menu menuScore = new Menu();
         menuScore.setGraphic(labelScore);
-        menuBar.getMenus().addAll(menuPause, menuPalyAgain, menuSave, menuRead, menuScore, menuHelp, menuExit);
+        Menu menuDefination = new Menu();
+        menuDefination.setGraphic(labelDefination);
+        menuBar.getMenus().addAll(menuPause, menuPalyAgain, menuSave, menuRead, menuScore, menuDefination, menuHelp, menuExit);
 //        menuBar.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 //            @Override
 //            public void handle(KeyEvent event) {

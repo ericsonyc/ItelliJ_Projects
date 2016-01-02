@@ -44,6 +44,8 @@ public class Ghost extends MovingObject implements Serializable {
 
     private final Image[] defaultImg;//默认Image数组
 
+    public double rate = 1.0;
+
     //初始化ghost地点和方向
     private final int initialLocationX;
     private final int initialLocationY;
@@ -125,7 +127,11 @@ public class Ghost extends MovingObject implements Serializable {
         state = Integer.parseInt(strs[i++]);
         trapCounter = Integer.parseInt(strs[i++]);
         chaseCount = Integer.parseInt(strs[i++]);
-        hollowCounter = Integer.parseInt(strs[i]);
+        hollowCounter = Integer.parseInt(strs[i++]);
+        rate = Double.parseDouble(strs[i]);
+        this.timeline.stop();
+        this.timeline.setRate(rate);
+        this.timeline.play();
         if (isHollow) {
             this.images = HOLLOW_IMG;
             if (hollowCounter == HOLLOW_MAX_TIME - 30) {
@@ -134,7 +140,7 @@ public class Ghost extends MovingObject implements Serializable {
                 isHollow = false;
                 images = defaultImg;
                 timeline.stop();
-                timeline.setRate(1.0);
+                timeline.setRate(rate);
                 timeline.play();
             }
         } else {
@@ -159,7 +165,8 @@ public class Ghost extends MovingObject implements Serializable {
         sb.append(state + ",");
         sb.append(trapCounter + ",");
         sb.append(chaseCount + ",");
-        sb.append(hollowCounter);
+        sb.append(hollowCounter + ",");
+        sb.append(rate);
         return sb.toString();
     }
 
@@ -183,7 +190,7 @@ public class Ghost extends MovingObject implements Serializable {
         images = defaultImg;
         state = TRAPPED;
 
-        timeline.setRate(1.0);
+        timeline.setRate(rate);
 
         this.setVisible(true);
         this.start();
@@ -196,9 +203,16 @@ public class Ghost extends MovingObject implements Serializable {
         // switch the animation images
         images = HOLLOW_IMG;
 
-        // make it move slower
+        // 使ghost移动速度变慢
         timeline.stop();
         timeline.setRate(0.35);
+        timeline.play();
+    }
+
+    public void ghostSetSlow(double rate) {
+        this.rate = rate;
+        timeline.stop();
+        timeline.setRate(rate);
         timeline.play();
     }
 
@@ -493,7 +507,7 @@ public class Ghost extends MovingObject implements Serializable {
                 images = defaultImg;
 
                 timeline.stop();
-                timeline.setRate(1.0);
+                timeline.setRate(rate);
                 timeline.play();
             }
         }

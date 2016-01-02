@@ -23,6 +23,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
@@ -33,6 +36,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -49,6 +53,13 @@ public class Maze extends Parent {
     private Stage primaryStg;
 
     public BooleanProperty gamePaused;//游戏暂停标志
+
+    public Media backgroundMedia;
+    public MediaPlayer backgroundMediaPlayer;
+    public Media eatDotMedia;
+    public MediaPlayer eatDotMediaPlayer;
+    public Media eatGhostMedia;
+    public MediaPlayer eatGhostMediaPlayer;
 
 
     //吃掉一个ghost显示的分数文本
@@ -99,6 +110,7 @@ public class Maze extends Parent {
         this.menuBar = menuBar;
         this.primaryStg = primaryStg;
         this.setFocused(true);//设置焦点
+
 
         gamePaused = new SimpleBooleanProperty(false);//游戏暂停标志位，开始为false
 
@@ -265,9 +277,10 @@ public class Maze extends Parent {
                 if (gameResultText.isVisible()) {
                     Label label = (Label) menuBar.getMenus().get(0).getGraphic();
                     label.setText("开始(P)");
+                    backgroundMediaPlayer.stop();
 
                 }
-                if (++flashingCount == 5) {
+                if (++flashingCount == 4) {
                     messageBox.setVisible(true);
                     waitForStart.set(true);
                     if (!lastGameResult.get() && pacMan.score.get() > MazeData.queue.get(0).getScore()) {
@@ -460,13 +473,46 @@ public class Maze extends Parent {
         group.getChildren().add(new WallBlackRectangle(29.5f, 13, 31, 15));
 
         group.getChildren().add(messageBox);
-
+        String path = System.getProperty("user.dir");
+        try {
+            String path1 = new File(path + "\\src\\pacman\\music\\background.mp3").toURI().toString();
+            backgroundMedia = new Media(path1);
+            backgroundMediaPlayer = new MediaPlayer(backgroundMedia);
+            backgroundMediaPlayer.setCycleCount(2);
+            backgroundMediaPlayer.stop();
+//            MediaView view1=new MediaView(backgroundMediaPlayer);
+            String path2 = new File(path + "\\src\\pacman\\music\\eatDots.mp3").toURI().toString();
+            eatDotMedia = new Media(path2);
+            eatDotMediaPlayer = new MediaPlayer(eatDotMedia);
+            eatDotMediaPlayer.setCycleCount(2);
+            eatDotMediaPlayer.stop();
+            String path3 = new File(path + "\\src\\pacman\\music\\eatGhost.mp3").toURI().toString();
+            eatGhostMedia = new Media(path3);
+            eatGhostMediaPlayer = new MediaPlayer(eatGhostMedia);
+            eatGhostMediaPlayer.setCycleCount(2);
+            eatGhostMediaPlayer.stop();
+//            group.getChildren().add(view1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         getChildren().add(group);
 
         if (DEBUG) {
             MazeData.printData();
             MazeData.printDots();
+        }
+    }
+
+    public void getCustomize() {
+        if (gameResultText.isVisible() && !messageBox.isVisible()) {
+            pauseGame();
+            SaveDialog saveDialog = new SaveDialog(primaryStg, "请等游戏开始后再定义鬼的速度！！");
+        } else {
+            if (!waitForStart.get() || gameResultText.isVisible()) {
+                pauseGame();
+            }
+            DefinationDialog dialog = new DefinationDialog(primaryStg, this);
         }
     }
 
@@ -687,6 +733,11 @@ public class Maze extends Parent {
             }
         }
 
+        if (e.getCode() == KeyCode.G) {
+            getCustomize();
+            return;
+        }
+
         if (e.getCode() == KeyCode.T) {
             getTopScores();
             return;
@@ -738,6 +789,14 @@ public class Maze extends Parent {
             pacMan.setKeyboardBuffer(MovingObject.MOVE_LEFT);
         }
 
+    }
+
+    public void definationGhosts(double[] data) {
+
+        for (int i = 0; i < ghosts.length; i++) {
+            Ghost ghost = ghosts[i];
+            ghost.ghostSetSlow(data[i]);
+        }
     }
 
 
@@ -811,12 +870,16 @@ public class Maze extends Parent {
 
 
     public void makeGhostsHollow() {
-
+        backgroundMediaPlayer.pause();
+        eatDotMediaPlayer.stop();
+        eatDotMediaPlayer.play();
         ghostEatenCount = 0;
 
         for (Ghost g : ghosts) {
             g.changeToHollowGhost();
         }
+        eatDotMediaPlayer.stop();
+        backgroundMediaPlayer.play();
     }
 
 
@@ -855,7 +918,15 @@ public class Maze extends Parent {
         for (Ghost g : ghosts) {
             if (hasMet(g)) {
                 if (g.isHollow) {
+                    if (eatGhostMediaPlayer == null) {
+                        eatGhostMediaPlayer = new MediaPlayer(eatGhostMedia);
+                        eatGhostMediaPlayer.stop();
+                    }
+                    backgroundMediaPlayer.pause();
+                    eatGhostMediaPlayer.play();
                     pacManEatsGhost(g);
+                    eatGhostMediaPlayer.stop();
+                    backgroundMediaPlayer.play();
                 } else {
                     for (Ghost ghost : ghosts) {
                         ghost.stop();
@@ -901,6 +972,12 @@ public class Maze extends Parent {
             return;
         }
 
+        if (backgroundMediaPlayer == null) {
+            backgroundMediaPlayer = new MediaPlayer(backgroundMedia);
+            backgroundMediaPlayer.stop();
+        }
+        backgroundMediaPlayer.play();
+
         messageBox.setVisible(false);
 
         for (Ghost g : ghosts) {
@@ -926,6 +1003,8 @@ public class Maze extends Parent {
     }
 
     public void pauseGame() {
+
+        backgroundMediaPlayer.pause();
 
         if (waitForStart.get() || gamePaused.get()) {
             return;
@@ -957,7 +1036,8 @@ public class Maze extends Parent {
 
 
     // reset status and start a new game
-    public void startNewGame() {
+    public void
+    startNewGame() {
 
         messageBox.setVisible(false);
         pacMan.resetStatus();
@@ -988,6 +1068,11 @@ public class Maze extends Parent {
         for (Ghost g : ghosts) {
             g.resetStatus();
         }
+        if (backgroundMedia != null) {
+            backgroundMediaPlayer.stop();
+        }
+        backgroundMediaPlayer.setCycleCount(2);
+        backgroundMediaPlayer.play();
 
     }
 

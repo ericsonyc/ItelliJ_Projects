@@ -9,18 +9,30 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Arc;
 import javafx.util.Duration;
+
+import java.io.File;
 
 
 public class DyingPacMan extends Arc {
 
     private final Timeline timeline;
+    private Media dyingMedia;
+    private MediaPlayer dyingMediaPlayer;
 
     public DyingPacMan(final Maze maze) {
 
         timeline = new Timeline();
         timeline.setCycleCount(1);
+        String path = System.getProperty("user.dir");
+        String path1 = new File(path + "\\src\\pacman\\music\\dyingpacman.mp3").toURI().toString();
+        dyingMedia = new Media(path1);
+        dyingMediaPlayer = new MediaPlayer(dyingMedia);
+        dyingMediaPlayer.setCycleCount(2);
+        dyingMediaPlayer.stop();
 
         KeyFrame kf1 =
                 new KeyFrame(Duration.millis(600),
@@ -33,8 +45,9 @@ public class DyingPacMan extends Arc {
                                 for (Ghost g : maze.ghosts) {
                                     g.hide();
                                 }
-
+                                maze.backgroundMediaPlayer.pause();
                                 DyingPacMan.this.setVisible(true);
+                                dyingMediaPlayer.play();
                             }
 
                         },
@@ -52,6 +65,8 @@ public class DyingPacMan extends Arc {
 //                                Label label=(Label) (maze.menuBar.getMenus().get(0).getGraphic());
 //                                label.setText("开始(P)");
                                 maze.startNewLife();
+                                dyingMediaPlayer.stop();
+                                maze.backgroundMediaPlayer.play();
                             }
 
                         },
