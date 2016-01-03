@@ -7,9 +7,13 @@ import android.view.MenuItem;
 
 public class MainActivity extends Activity {
 
+    public static String TAG = "MainActivity";
+    private MyGLSurfaceView myGLSurfaceView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        myGLSurfaceView = new MyGLSurfaceView(this);
+        setContentView(myGLSurfaceView);
     }
 }
