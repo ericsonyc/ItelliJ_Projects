@@ -3,6 +3,7 @@ package com.android.openglsample.app;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -19,6 +20,8 @@ public class MyRender implements GLSurfaceView.Renderer {
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
+
+    public volatile float mAngle;
 
     private final String vertexShaderCode =
             // This matrix member variable provides a hook to manipulate
@@ -52,15 +55,23 @@ public class MyRender implements GLSurfaceView.Renderer {
         Log.i(MainActivity.TAG, "onSurfaceChanged");
     }
 
+    private float[] mRotationMatrix=new float[16];
+
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+        float[] scratch=new float[16];
         // 设置相机的位置(视口矩阵)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
+        long time= SystemClock.uptimeMillis()%4000L;
+        float angle=0.09f*((int)time);
+        Matrix.setRotateM(mRotationMatrix,0,angle,0,0,-1.0f);
+
         // 计算投影和视口变换
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        triangle.draw(mMVPMatrix);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        triangle.draw(scratch);
         Log.i(MainActivity.TAG, "onDrawFrame");
     }
 
@@ -75,5 +86,13 @@ public class MyRender implements GLSurfaceView.Renderer {
         GLES20.glCompileShader(shader);
 
         return shader;
+    }
+
+    public float getAngle(){
+        return mAngle;
+    }
+
+    public void setAngle(float angle){
+        mAngle=angle;
     }
 }
