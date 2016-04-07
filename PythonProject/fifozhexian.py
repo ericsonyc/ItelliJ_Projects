@@ -21,7 +21,7 @@ cpujob4 = []
 cpujob5 = []
 cpujob6 = []
 file = open('F:\\test\\fifo')
-tempfifo = 2951462412395399
+tempfifo = 2951462412395397
 tempjob1 = 2
 tempjob2 = 2
 tempjob3 = 2
@@ -170,7 +170,7 @@ plt4, = plt.plot(newrealtime, cpujob3, color='blue')
 plt5, = plt.plot(newrealtime, cpujob2, color='green')
 plt6, = plt.plot(newrealtime, cpujob1, color='red')
 
-plt.fill_between(newrealtime, x, job1, facecolor='red')
+plt.fill_between(newrealtime, x, cpujob1, facecolor='red')
 plt.fill_between(newrealtime, cpujob1, cpujob2, facecolor='green')
 plt.fill_between(newrealtime, cpujob2, cpujob3, facecolor='blue')
 plt.fill_between(newrealtime, cpujob3, cpujob4, facecolor='black')
