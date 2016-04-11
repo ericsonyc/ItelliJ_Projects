@@ -1,7 +1,7 @@
 def sign_magnitude(number, bits):
     maxValue = 2 ** (bits - 1) - 1
     minValue = -2 ** (bits - 1)
-    if number > maxValue or number < minValue:
+    if number > maxValue or number <= minValue:
         return 'None'
     output = '{:b}'.format(number)
     if number < 0:
@@ -13,7 +13,7 @@ def sign_magnitude(number, bits):
 
 
 if __name__ == '__main__':
-    number = int(raw_input('Please enter the integer:'))
-    bits = int(raw_input('Please enter the number of bits:'))
+    number = -16
+    bits = 5
     output = sign_magnitude(number, bits)
     print(output)

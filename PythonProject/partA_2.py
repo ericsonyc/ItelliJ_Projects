@@ -1,35 +1,29 @@
 def add_overflow(numberA, numberB, base):
-    output = numberA + numberB
-    return output
+    temp = ''
+    for i in range(base):
+        temp += '1'
+    temp = int(temp, 2)
+    comA = format(numberA & temp, '0' + str(base) + 'b')
+    comB = format(numberB & temp, '0' + str(base) + 'b')
+    strA = str(comA)
+    strB = str(comB)
+    plus = 0
+    count = base
+    result = ''
+    for i in range(base):
+        a = int(strA[count - i - 1])
+        b = int(strB[count - i - 1])
+        temp = (plus + a + b) % 2
+        plus = int((plus + a + b) / 2)
+        result = str(temp) + result
+    max = 2 ** (base - 1) - 1
+    min = -2 ** (base - 1)
+    out = numberA + numberB
+    if out > max or out < min:
+        print(strA + ' + ' + strB + ' = ' + result + ' overflow')
+    else:
+        print(strA + ' + ' + strB + ' = ' + result)
 
 
 if __name__ == '__main__':
-    numberA = int(raw_input('Please enter the first integer:'))
-    numberB = int(raw_input('Please enter the second integer:'))
-    base = int(raw_input('Please enter the base:'))
-    maxValue = 2 ** (base - 1) - 1
-    minValue = -2 ** (base - 1)
-    output = add_overflow(numberA, numberB, base)
-    a = bin(numberA)
-    b = bin(numberB)
-    a = a[a.index('b') + 1:]
-    b = b[b.index('b') + 1:]
-    if numberA < 0:
-        a = format(a, '1>' + str(base))
-    else:
-        a = format(a, '0>' + str(base))
-    if numberB < 0:
-        b = format(b, '1>' + str(base))
-    else:
-        b = format(b, '0>' + str(base))
-    outStr = a + ' + ' + b + ' = '
-    c = bin(output)
-    c = c[c.index('b') + 1:]
-    if output < 0:
-        c = format(c, '1>' + str(base))
-    else:
-        c = format(c, '0>' + str(base))
-    if ((output > maxValue) or (output < minValue)):
-        print(outStr + c + ' overflow')
-    else:
-        print(outStr + c)
+    add_overflow(1, 1, 2)
