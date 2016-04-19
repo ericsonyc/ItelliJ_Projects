@@ -85,7 +85,7 @@ public class WordCount {
         job.setReducerClass(IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        job.setNumReduceTasks(38);
+        job.setNumReduceTasks(35);
         Path path = new Path(otherArgs[otherArgs.length-1]);
         if (fs.exists(path))
             fs.delete(path, true);

@@ -26,10 +26,6 @@ public class Kirchhoff {
             // Logger.getLogger("KirchhoffMigration").log(Level.INFO,
             // "enter main");
             Configuration conf = new Configuration();
-//            conf.set("mapreduce.job.jar", "HadoopExercises.jar");
-//            conf.set("fs.defaultFS", "hdfs://114.212.189.19:8020");
-//            conf.set("mapreduce.jobtracker.address", "114.212.189.19:9001");
-//            conf.set("yarn.resourcemanager.address", "114.212.189.19:8032");
             String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
             if (otherArgs.length < 2) {
                 System.out
@@ -51,19 +47,19 @@ public class Kirchhoff {
             conf.set("mapreduce.task.timeout", "1000000000");
             conf.set("mapreduce.job.reduce.slowstart.completedmaps", "0.5");
             //conf.set("yarn.nodemanager.resource.memory-mb", "20480");
-            conf.set("yarn.scheduler.minimum-allocation-mb", "1024");
+            conf.set("yarn.scheduler.minimum-allocation-mb", "1536");
             //conf.set("yarn.scheduler.maximum-allocation-mb", "3072");
-            conf.set("mapreduce.map.memory.mb", "1024");
+//            conf.set("mapreduce.map.memory.mb", "1024");
             conf.set("mapreduce.reduce.memory.mb", "1024");
             // conf.set("mapreduce.map.java.opts", "-Xmx3072m -Xms1024m");
             // conf.set("mapreduce.reduce.java.opts", "-Xmx2048 -Xms1024m");
             //conf.setInt("mapreduce.task.io.sort.mb", 200);
             //conf.setBoolean("mapreduce.map.output.compress", true);
-            conf.set("mapreduce.job.jvm.numtasks", "3");
+//            conf.set("mapreduce.job.jvm.numtasks", "3");
 
             conf.set("path", otherArgs[0]);
-            //conf.setInt("apx", 50);
-            //conf.setInt("apy", 50);
+            //conf.setInt("apx", 20);
+            //conf.setInt("apy", 20);
             CPUKTMigration ktm = new CPUKTMigration();
             ktm.setInputFile(kirchhoff.shotsFile, kirchhoff.cpuSxyFile,
                     kirchhoff.cpuGxyFile, kirchhoff.cpuCxyFile,
@@ -72,7 +68,7 @@ public class Kirchhoff {
             ktm.setVerb(true);
             ktm.setAntiAlising(true);
             ktm.ktMigration(1, conf);
-
+//            conf.setInt("apx", 10);
             //printConfPreserve(conf);
 
             Job job = Job.getInstance(conf);
@@ -80,23 +76,22 @@ public class Kirchhoff {
             job.setJobName("Kirchhoff");
             job.setInputFormatClass(MyInputFormat.class);
 
-            //System.out.println("MultiMap");
+//            System.out.println("MultiMap");
             //MultiMap.setNumberOfThreads(job, 2);
-            //MyOutputFormatltiMap.setMapperClass(job, CPUKTMigrationNoThread.class);
-            job.setMapperClass(MyMapper.class);
-            //job.setMapperClass(CPUKTMigrationMapWriteHdfs.class);
+            //MultiMap.setMapperClass(job, CPUKTMigrationNoThread.class);
+            job.setMapperClass(CPUKTMigrationMapWriteHdfs.class);
 
             //MultithreadedMapper.setMapperClass(job, CPUKTMigration.class);
             //MultithreadedMapper.setNumberOfThreads(job, 4);
-            job.setCombinerClass(MyCombiner.class);
+            job.setCombinerClass(ReadFileCombine.class);
             job.setPartitionerClass(ShotPartitioner.class);
-            job.setReducerClass(MyReducer.class);
-            job.setNumReduceTasks(1);
+            job.setReducerClass(ReadFileReducer.class);
+            job.setNumReduceTasks(15);
             FileSystem fs = FileSystem.get(conf);
             if (!fs.exists(new Path(otherArgs[0] + "/fcxy.data"))) {
                 job.killJob();
             }
-            //long startTime = System.currentTimeMillis();
+//            long startTime = System.currentTimeMillis();
 //            for (int i = 0; i < 10; i++) {
 //                String filename = otherArgs[0] + "data/fcxy" + i + ".data";
 //                if (!fs.exists(new Path(filename))) {
@@ -111,54 +106,37 @@ public class Kirchhoff {
 //                }
 //                FileInputFormat.addInputPath(job, new Path(filename));
 //            }
-            //long endTime = System.currentTimeMillis();
-            //System.out.println("Time:" + (endTime - startTime) + "ms");
+//            long endTime = System.currentTimeMillis();
+//            System.out.println("Time:" + (endTime - startTime) + "ms");
             FileInputFormat.addInputPath(job, new Path(otherArgs[0] + "/fcxy.data"));
             Path outputPath = new Path(otherArgs[1]);
 
             if (fs.exists(outputPath)) {
                 fs.delete(outputPath, true);
             }
-            job.setOutputFormatClass(MyOutputFormat.class);
             FileOutputFormat.setOutputPath(job, outputPath);
-            //job.setOutputFormatClass(MyOutputFormat.class);
+            job.setOutputFormatClass(MyOutputFormat.class);
             job.setOutputKeyClass(Text.class);
             job.setOutputValueClass(Text.class);
-
-            // Logger.getLogger("KirchhoffMigration").log(Level.INFO,
-            // "begin Job");
+            job.setOutputFormatClass(MyOutputFormat.class);
             job.waitForCompletion(true);
-//            Runtime runtime = Runtime.getRuntime();
-//            runtime.exec("hadoop dfs -rm -r " + otherArgs[0] + "/map");
+            Runtime runtime = Runtime.getRuntime();
+            runtime.exec("hadoop dfs -rm -r " + otherArgs[0] + "/map");
 
             long end = System.currentTimeMillis();
             System.out.println("Times:" + (end - start) + "ms");
 
-//            FileStatus[] status = fs.listStatus(outputPath);
-//            Path imagePath = new Path(outputPath.toString() + "/" + kirchhoff.imageFile);
-//            FSDataOutputStream fsOut = fs.create(imagePath, true);
-//            byte[] bytes = new byte[2000];
-//            int cc = 0;
-//            for (FileStatus ss : status) {
-//                FSDataInputStream fsIn = fs.open(ss.getPath());
-//                while ((cc = fsIn.read(bytes)) != -1) {
-//                    fsOut.write(bytes, 0, cc);
-//                }
-//                fsIn.close();
-//                fs.delete(ss.getPath(), true);
-//            }
-//            fsOut.close();
-            // FileSystem fsout = FileSystem.get(conf);
-
-            //lalalalala
             FileStatus[] status = fs.listStatus(outputPath);
             List<Integer> indexes = new ArrayList<Integer>();
+            List<Integer> noIndexes = new ArrayList<Integer>();
             List<Integer> datass = new ArrayList<Integer>();
             for (int i = 0; i < status.length; i++) {
                 String strtemp = status[i].getPath().toString();
                 if (strtemp.lastIndexOf("#") != -1) {
                     datass.add(Integer.parseInt(strtemp.substring(strtemp.lastIndexOf("#") + 1)));
                     indexes.add(i);
+                } else {
+                    noIndexes.add(i);
                 }
             }
 
@@ -181,48 +159,67 @@ public class Kirchhoff {
             int cc = 0;
             for (int i = 0; i < indexes.size(); i++) {
                 FileStatus ss = status[indexes.get(i)];
-                System.out.println(ss.getPath());
+//                System.out.println(ss.getPath());
                 FSDataInputStream fsIn = fs.open(ss.getPath());
                 while ((cc = fsIn.read(bytes)) != -1) {
                     fsOut.write(bytes, 0, cc);
                 }
                 fsIn.close();
-                fs.delete(ss.getPath(), true);
+                //fs.delete(ss.getPath(), true);
             }
             fsOut.close();
 
+            for (int i = 0; i < noIndexes.size(); i++) {
+                FileStatus ss = status[noIndexes.get(i)];
+                //fs.delete(ss.getPath(), true);
+            }
 
 //            FileStatus[] status = fs.listStatus(outputPath);
-//            ArrayList<Integer> keys = new ArrayList<Integer>();
-//            ArrayList<String> values = new ArrayList<String>();
+//            Path imagePath = new Path(outputPath.toString() + "/" + kirchhoff.imageFile);
+//            FSDataOutputStream fsOut = fs.create(imagePath, true);
+//            byte[] bytes = new byte[2000];
+//            int cc = 0;
 //            for (FileStatus ss : status) {
 //                FSDataInputStream fsIn = fs.open(ss.getPath());
-//                BufferedReader br = new BufferedReader(new InputStreamReader(
-//                        fsIn));
-//                String str = null;
-//                while ((str = br.readLine()) != null) {
-//                    String[] datas = str.split("#");
-//                    keys.add(Integer.parseInt(datas[0]));
-//                    values.add(datas[1]);
+//                while ((cc = fsIn.read(bytes)) != -1) {
+//                    fsOut.write(bytes, 0, cc);
 //                }
-//                br.close();
 //                fsIn.close();
+//                fs.delete(ss.getPath(), true);
 //            }
-//
-//            for (int i = 0; i < keys.size(); i++) {
-//                for (int j = 0; j < keys.size() - i - 1; j++) {
-//                    if (keys.get(j) > keys.get(j + 1)) {
-//                        int temp = keys.get(j);
-//                        keys.set(j, keys.get(j + 1));
-//                        keys.set(j + 1, temp);
-//                        String t = values.get(j);
-//                        values.set(j, values.get(j + 1));
-//                        values.set(j + 1, t);
-//                    }
-//                }
-//            }
-//            // fs.delete(outputPath, true);
-//            kirchhoff.writeImage(conf, outputPath, values);
+//            fsOut.close();
+            // FileSystem fsout = FileSystem.get(conf);
+            /*FileStatus[] status = fs.listStatus(outputPath);
+            ArrayList<Integer> keys = new ArrayList<Integer>();
+            ArrayList<String> values = new ArrayList<String>();
+            for (FileStatus ss : status) {
+                FSDataInputStream fsIn = fs.open(ss.getPath());
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        fsIn));
+                String str = null;
+                while ((str = br.readLine()) != null) {
+                    String[] datas = str.split("#");
+                    keys.add(Integer.parseInt(datas[0]));
+                    values.add(datas[1]);
+                }
+                br.close();
+                fsIn.close();
+            }
+
+            for (int i = 0; i < keys.size(); i++) {
+                for (int j = 0; j < keys.size() - i - 1; j++) {
+                    if (keys.get(j) > keys.get(j + 1)) {
+                        int temp = keys.get(j);
+                        keys.set(j, keys.get(j + 1));
+                        keys.set(j + 1, temp);
+                        String t = values.get(j);
+                        values.set(j, values.get(j + 1));
+                        values.set(j + 1, t);
+                    }
+                }
+            }
+            // fs.delete(outputPath, true);
+            kirchhoff.writeImage(conf, outputPath, values);*/
         } catch (Exception e) {
             e.printStackTrace();
         }
