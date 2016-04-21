@@ -1,5 +1,6 @@
 package spark;
 
+import org.apache.commons.beanutils.converters.IntegerArrayConverter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.util.GenericOptionsParser;
@@ -58,9 +59,10 @@ public class KirchhoffSpark {
         hadoopConf.setInt("SplitPerMap", 1);//一个map中多少个键值对
 
         System.out.println("begin RDD");
+        int numbers = Integer.parseInt(otherArgs[2]);
         JavaPairRDD<Integer, String> pairRdd = jsc.newAPIHadoopFile(otherArgs[0]
                         + "/fcxy.data", MyInputFormat.class, Integer.class,
-                String.class, hadoopConf);
+                String.class, hadoopConf).repartition(numbers);
 //        List<Tuple2<Integer, String>> tuples = pairRdd.collect();
 //        System.out.println("tuples.length:" + tuples.size());
 //        for (int i = 0; i < tuples.size(); i++) {

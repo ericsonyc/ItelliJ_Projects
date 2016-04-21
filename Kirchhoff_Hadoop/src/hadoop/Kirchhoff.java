@@ -1,5 +1,6 @@
 package hadoop;
 
+import org.apache.commons.beanutils.converters.IntegerArrayConverter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.Text;
@@ -40,7 +41,7 @@ public class Kirchhoff {
             kirchhoff.cpuCxyFile = otherArgs[0] + kirchhoff.cpuCxyFile;
             kirchhoff.rmsvFile = otherArgs[0] + kirchhoff.rmsvFile;
 
-            conf.setLong("FileSplitLength", 8000L);//文件逻辑切分字节
+            conf.setLong("FileSplitLength", 800L);//文件逻辑切分字节
             conf.setInt("SplitPerMap", 1);//一个map中多少个键值对
 
             // set the configuration
@@ -50,7 +51,7 @@ public class Kirchhoff {
             conf.set("yarn.scheduler.minimum-allocation-mb", "1536");
             //conf.set("yarn.scheduler.maximum-allocation-mb", "3072");
 //            conf.set("mapreduce.map.memory.mb", "1024");
-            conf.set("mapreduce.reduce.memory.mb", "1024");
+            conf.set("mapreduce.reduce.memory.mb", otherArgs[3]);
             // conf.set("mapreduce.map.java.opts", "-Xmx3072m -Xms1024m");
             // conf.set("mapreduce.reduce.java.opts", "-Xmx2048 -Xms1024m");
             //conf.setInt("mapreduce.task.io.sort.mb", 200);
@@ -86,7 +87,8 @@ public class Kirchhoff {
             job.setCombinerClass(ReadFileCombine.class);
             job.setPartitionerClass(ShotPartitioner.class);
             job.setReducerClass(ReadFileReducer.class);
-            job.setNumReduceTasks(15);
+            int tempNum= Integer.parseInt(otherArgs[2]);
+            job.setNumReduceTasks(tempNum);
             FileSystem fs = FileSystem.get(conf);
             if (!fs.exists(new Path(otherArgs[0] + "/fcxy.data"))) {
                 job.killJob();
