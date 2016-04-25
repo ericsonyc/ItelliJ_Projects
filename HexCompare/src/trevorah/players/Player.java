@@ -1,9 +1,9 @@
-package hexgame.players;
-
-import hexgame.gameMechanics.Move;
-import hexgame.hexBoards.Board;
+package trevorah.players;
 
 import java.util.ArrayList;
+
+import trevorah.hexBoards.Board;
+import trevorah.gameMechanics.Move;
 
 public interface Player {
 

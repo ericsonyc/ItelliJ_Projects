@@ -1,6 +1,6 @@
 package hexgame.graphical.boardPanels;
 
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 import hexgame.hexBoards.ScoreBoard;
 
 import java.awt.Color;
@@ -8,7 +8,7 @@ import java.awt.Color;
 @SuppressWarnings("serial")
 public class HeatMap extends HexPanel {
 
-  public HeatMap(Board board) {
+  public HeatMap(BoardInterface board) {
     super(board);
   }
 

@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class AdjPlayer extends AbstractPlayer {
 
-    protected GameBoard mainBoard;
+    protected Board mainBoard;
     protected OpenBoard boardClone;
     protected ScoreBoard myPathlength;
     protected ScoreBoard oppPathlength;
@@ -54,13 +54,13 @@ public class AdjPlayer extends AbstractPlayer {
         auxBoards.add(comboPathCounts);
 
         switch (colour) {
-            case Board.RED:
+            case BoardInterface.RED:
                 myBorder1 = BoardData.RED_BORDER1_NODE;
                 myBorder2 = BoardData.RED_BORDER2_NODE;
                 oppBorder1 = BoardData.BLUE_BORDER1_NODE;
                 oppBorder2 = BoardData.BLUE_BORDER2_NODE;
                 break;
-            case Board.BLUE:
+            case BoardInterface.BLUE:
                 myBorder1 = BoardData.BLUE_BORDER1_NODE;
                 myBorder2 = BoardData.BLUE_BORDER2_NODE;
                 oppBorder1 = BoardData.RED_BORDER1_NODE;
@@ -82,7 +82,7 @@ public class AdjPlayer extends AbstractPlayer {
 
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
-                if (game.getBoard().get(x, y) == Board.BLANK) {
+                if (game.getBoard().get(x, y) == BoardInterface.BLANK) {
 
           /*
            * player related scores
@@ -139,7 +139,7 @@ public class AdjPlayer extends AbstractPlayer {
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
                 // if empty space
-                if (mainBoard.get(x, y) == Board.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player))
+                if (mainBoard.get(x, y) == BoardInterface.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player))
                     if (beats(x, y, winx, winy)) {
                         winx = x;
                         winy = y;
@@ -156,7 +156,7 @@ public class AdjPlayer extends AbstractPlayer {
             x = random.nextInt(this.size);
             y = random.nextInt(this.size);
         }
-        while (mainBoard.get(x, y) != Board.BLANK || mainBoard.getSeason(x, y) != game.getSeasonPicker().getCurrentSeason(player));
+        while (mainBoard.get(x, y) != BoardInterface.BLANK || mainBoard.getSeason(x, y) != game.getSeasonPicker().getCurrentSeason(player));
         return new Point(x, y);
     }
 

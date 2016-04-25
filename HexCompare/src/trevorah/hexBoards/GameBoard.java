@@ -1,9 +1,8 @@
-package hexgame.hexBoards;
+package trevorah.hexBoards;
 
-import hexgame.gameMechanics.InvalidMoveException;
-import hexgame.gameMechanics.Move;
-import hexgame.gameMechanics.SeasonMechanics;
-
+import trevorah.gameMechanics.Move;
+import trevorah.gameMechanics.InvalidMoveException;
+import trevorah.gameMechanics.SeasonMechanics;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -15,8 +14,8 @@ public class GameBoard extends AbstractBoard{
   private SeasonMechanics seasonPicker;
 
 	public GameBoard(int size, SeasonMechanics seasonPicker) {
-    this.name = "Game";
-    this.seasonPicker = seasonPicker;
+    	this.name = "HexGame";
+    	this.seasonPicker = seasonPicker;
 		int numberOfSeasons = seasonPicker.getSeasonCount();
 		this.data = new BoardData(size, numberOfSeasons);
 		this.size = size;
@@ -24,7 +23,7 @@ public class GameBoard extends AbstractBoard{
 
 	public GameBoard(int size, SeasonMechanics seasonPicker, BoardData data){
 		this.size = size;
-    this.seasonPicker = seasonPicker;
+    	this.seasonPicker = seasonPicker;
 		this.data = data;
 	}
 

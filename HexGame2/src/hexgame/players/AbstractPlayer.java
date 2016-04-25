@@ -1,13 +1,13 @@
 package hexgame.players;
 
 import hexgame.gameMechanics.Runner;
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 
 import java.util.ArrayList;
 
-public abstract class AbstractPlayer implements Player {
+public abstract class AbstractPlayer implements PlayerInterface {
 
-    protected ArrayList<Board> auxBoards = new ArrayList<Board>();
+    protected ArrayList<BoardInterface> auxBoards = new ArrayList<BoardInterface>();
     protected Runner game;
     protected int player;
     protected int opponent;
@@ -16,14 +16,14 @@ public abstract class AbstractPlayer implements Player {
     public AbstractPlayer(Runner game, int colour, String[] args) {
         this.game = game;
         this.player = colour;
-        if (this.player == Board.RED)
-            this.opponent = Board.BLUE;
+        if (this.player == BoardInterface.RED)
+            this.opponent = BoardInterface.BLUE;
         else
-            this.opponent = Board.RED;
+            this.opponent = BoardInterface.RED;
         this.size = game.getBoard().getSize();
     }
 
-    public ArrayList<Board> getAuxBoards() {
+    public ArrayList<BoardInterface> getAuxBoards() {
         return auxBoards;
     }
 }

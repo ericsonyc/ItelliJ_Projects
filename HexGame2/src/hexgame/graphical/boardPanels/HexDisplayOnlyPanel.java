@@ -1,11 +1,11 @@
 package hexgame.graphical.boardPanels;
 
 
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 
 @SuppressWarnings("serial")
 public class HexDisplayOnlyPanel extends HexPanel {
-    public HexDisplayOnlyPanel(Board board) {
+    public HexDisplayOnlyPanel(BoardInterface board) {
         super(board);
     }
 

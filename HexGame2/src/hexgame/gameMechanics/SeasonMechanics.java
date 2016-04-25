@@ -1,6 +1,6 @@
 package hexgame.gameMechanics;
 
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 
 import java.awt.Color;
 
@@ -51,8 +51,8 @@ public class SeasonMechanics {
 
     }
 
-    redSeasonPattern = getSubPattern(Board.RED);
-    blueSeasonPattern = getSubPattern(Board.BLUE);
+    redSeasonPattern = getSubPattern(BoardInterface.RED);
+    blueSeasonPattern = getSubPattern(BoardInterface.BLUE);
 
     redPosition = 0;
     bluePosition = 0;
@@ -70,10 +70,10 @@ public class SeasonMechanics {
   public int getCurrentSeason(int player) {
     int season = 0;
     switch (player) {
-      case Board.RED:
+      case BoardInterface.RED:
         season = redSeasonPattern[redPosition];
         break;
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         season = blueSeasonPattern[bluePosition];
         break;
     }
@@ -83,10 +83,10 @@ public class SeasonMechanics {
   public int getCurrentPos(int player) {
     int pos = 0;
     switch (player) {
-      case Board.RED:
+      case BoardInterface.RED:
         pos = redPosition;
         break;
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         pos = bluePosition;
         break;
     }
@@ -95,10 +95,10 @@ public class SeasonMechanics {
 
   public void increment(int player) {
     switch (player) {
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         bluePosition = (bluePosition + 1) % blueSeasonPattern.length;
         break;
-      case Board.RED:
+      case BoardInterface.RED:
         redPosition = (redPosition + 1) % redSeasonPattern.length;
         break;
     }
@@ -106,9 +106,9 @@ public class SeasonMechanics {
 
   public boolean isThinking(int player) {
     switch (player) {
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         return blueThinking;
-      case Board.RED:
+      case BoardInterface.RED:
         return redThinking;
       default:
         System.err.println("player id " + player + " does not exist!");
@@ -118,12 +118,12 @@ public class SeasonMechanics {
 
   public void thinkingPlayer(int player) {
     switch (player) {
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         System.out.println("blue is thinking");
         blueThinking = true;
         redThinking = false;
         break;
-      case Board.RED:
+      case BoardInterface.RED:
         System.out.println("red is thinking");
         blueThinking = false;
         redThinking = true;
@@ -152,7 +152,7 @@ public class SeasonMechanics {
   public int[] getSubPattern(int player) {
     int[] sublist = new int[seasonPattern.length / 2];
     int startPos;
-    if (player == Board.RED)
+    if (player == BoardInterface.RED)
       startPos = 0;
     else
       startPos = 1;

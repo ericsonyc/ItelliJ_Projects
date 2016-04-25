@@ -1,23 +1,129 @@
 package hexgame.hexBoards;
 
-public interface Board {
+import hexgame.gameMechanics.InvalidMoveException;
+import hexgame.gameMechanics.Move;
+import hexgame.gameMechanics.MoveInterface;
+import hexgame.gameMechanics.SeasonMechanics;
 
-  public static final int BLANK = 0;
-  public static final int RED = 1;
-  public static final int BLUE = 2;
-  public static final int MAX_SUPPORTED_BOARD_SIZE = 99;
-  public static final int MIN_SUPPORTED_BOARD_SIZE = 1;
-  public static final int DEFAULT_BOARD_SIZE = 7;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Toolkit;
 
-  public int getSize();
+//GameBoard correspond to Board class
+public class Board extends AbstractBoard{
 
-  public int get(int x, int y);
+	private Point selected;
+	protected BoardData data;
+  	private SeasonMechanics seasonPicker;
 
-  public String getName();
+	public Board(int size, SeasonMechanics seasonPicker) {
+    	this.name = "Game";
+    	this.seasonPicker = seasonPicker;
+		int numberOfSeasons = seasonPicker.getSeasonCount();
+		this.data = new BoardData(size, numberOfSeasons);
+		this.size = size;
+	}
 
-  public void setName(String name);
+	public Board(int size, SeasonMechanics seasonPicker, BoardData data){
+		this.size = size;
+    this.seasonPicker = seasonPicker;
+		this.data = data;
+	}
 
-  public boolean hasChanged();
+    public Color getSeasonColour(int x, int y){
+        return seasonPicker.getColourArray()[getSeason(x, y)];
+  }
 
-  public void changeNoted();
+
+	public boolean makeMove(Move move) throws InvalidMoveException {
+
+    	boolean moveAccepted = false;
+		int x = move.getXPosition();
+		int y = move.getYPosition();
+		int colour = move.getColour();
+		if (x < 0 || x > size-1 || y < 0 ||y > size-1) {
+     Toolkit.getDefaultToolkit().beep();
+			throw new InvalidMoveException(
+					"Coordinates outside the play area!", move,
+					InvalidMoveException.OUTSIDE_BOARD);
+		} else if (data.get(move.getXPosition(), move.getYPosition()).getValue() == BoardInterface.BLANK &&
+            data.get(x, y).getSeason() == seasonPicker.getCurrentSeason(colour)) {
+			data.set(move.getXPosition(), move.getYPosition(), colour);
+      		moveAccepted = true;
+      		changeOccured = true;
+		} else {
+      Toolkit.getDefaultToolkit().beep();
+			throw new InvalidMoveException("That hex is not blank!", move,
+					InvalidMoveException.ALREADY_TAKEN);
+		}
+		return moveAccepted;
+	}
+
+  public boolean checkwin(int player){
+    return this.data.checkWin(player);
+  }
+
+  @Override
+	public int get(int x, int y) {
+		return data.get(x, y).getValue();
+	}
+
+  public int getSeason(int x, int y){
+    return data.get(x, y).getSeason();
+  }
+
+  public int getNumberOfSeasons(){
+    if(seasonPicker!= null)
+    return seasonPicker.getSeasonCount();
+    else
+      return 1;
+  }
+
+	public Point getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Point selected) {
+		this.selected = selected;
+	}
+
+	public void setSelected(int x, int y) {
+		this.setSelected(new Point(x,y));
+	}
+
+
+	public OpenBoard openClone(){
+		return new OpenBoard(size,seasonPicker, data.clone());
+	}
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void setName(String name) {
+    changeOccured = true;
+    this.name = name;
+  }
+
+    @Override
+    public boolean setBoardSize(int sizeX, int sizeY) throws InvalidBoardSizeException, BoardAlreadySizedException {
+        return false;
+    }
+
+    @Override
+    public Piece[][] getBoardView() throws NoBoardDefinedException {
+        return new Piece[0][];
+    }
+
+    @Override
+    public boolean placePiece(Piece colour, MoveInterface move) throws PositionAlreadyTakenException, InvalidPositionException, InvalidColourException, NoBoardDefinedException {
+        return false;
+    }
+
+    @Override
+    public Piece gameWon() throws NoBoardDefinedException {
+        return null;
+    }
 }

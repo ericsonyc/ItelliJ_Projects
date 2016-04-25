@@ -1,39 +1,42 @@
 package hexgame.gameMechanics;
 
+import hexgame.hexBoards.BoardInterface;
+import hexgame.hexBoards.BoardInterface;
 import hexgame.hexBoards.Board;
-import hexgame.hexBoards.GameBoard;
 import hexgame.players.AdjPlayer;
 import hexgame.players.AdjSeasonPlayer;
-import hexgame.players.Player;
-import hexgame.players.PointAndClickPlayer;
+import hexgame.players.PlayerInterface;
+import hexgame.players.HumanPlayer;
 import hexgame.players.randomTurn.R_Path;
 import hexgame.players.randomTurn.R_Single;
 
+import javax.swing.*;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameRunner extends Thread implements Runner {
 
-    private GameBoard board;
-    private Player red;
-    private Player blue;
-    private int currentPlayer = Board.RED;
+    private Board board;
+    private PlayerInterface red;
+    private PlayerInterface blue;
+    private int currentPlayer = BoardInterface.RED;
     private boolean finished = false;
     private volatile boolean stop = false;
     private SeasonMechanics seasonPicker;
     private int gameType;
     private String commentary = "";
 
-    public GameRunner(int size, int type, int seasoncount, int redPlayer, String[] redArgs, int bluePlayer, String[] blueArgs) {
+
+    public GameRunner(int boardSize, int gameType, int seasoncount, int redPlayer, String[] redArgs, int bluePlayer, String[] blueArgs) {
         this.seasonPicker = new SeasonMechanics(seasoncount);
-        this.board = new GameBoard(size, seasonPicker);
-        this.gameType = type;
-        this.red = createPlayer(redPlayer, Board.RED, redArgs);
-        this.blue = createPlayer(bluePlayer, Board.BLUE, blueArgs);
+        this.board = new Board(boardSize, seasonPicker);
+        this.gameType = gameType;
+        this.red = createPlayer(redPlayer, BoardInterface.RED, redArgs);
+        this.blue = createPlayer(bluePlayer, BoardInterface.BLUE, blueArgs);
     }
 
-    public GameBoard getBoard() {
+    public Board getBoard() {
         return board;
     }
 
@@ -42,27 +45,31 @@ public class GameRunner extends Thread implements Runner {
 
         Random coinflip = new Random();
 
-    /*
-     * Main running loop
-     */
-        while (!finished && !stop) {
+        if (this.gameType == Runner.RANDOM_TURN){
+            if (coinflip.nextBoolean() == true)
+                this.currentPlayer = BoardInterface.BLUE;
+            else
+                this.currentPlayer = BoardInterface.RED;
+        }
+        if(this.gameType==Runner.OPPOSITE_TURN){
+            this.currentPlayer=BoardInterface.BLUE;
+        }
 
-            if (this.gameType == Runner.RANDOM_TURN)
-                if (coinflip.nextBoolean() == true)
-                    this.currentPlayer = Board.BLUE;
-                else
-                    this.currentPlayer = Board.RED;
+        /*
+         * Main running loop
+         */
+        while (!finished && !stop) {
 
             boolean moveAccepted = false;
 
             Move move = null;
             switch (currentPlayer) {
-                case Board.RED:
-                    seasonPicker.thinkingPlayer(Board.RED);
+                case BoardInterface.RED:
+                    seasonPicker.thinkingPlayer(BoardInterface.RED);
                     move = red.getMove();
                     break;
-                case Board.BLUE:
-                    seasonPicker.thinkingPlayer(Board.BLUE);
+                case BoardInterface.BLUE:
+                    seasonPicker.thinkingPlayer(BoardInterface.BLUE);
                     move = blue.getMove();
                     break;
                 default:
@@ -71,7 +78,8 @@ public class GameRunner extends Thread implements Runner {
                     break;
             }
             try {
-                moveAccepted = board.makeMove(move);
+                if(move!=null)
+                    moveAccepted = board.makeMove(move);
             } catch (InvalidMoveException ex) {
                 Logger.getLogger(GameRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -90,13 +98,13 @@ public class GameRunner extends Thread implements Runner {
 
 
             switch (currentPlayer) {
-                case Board.RED:
-                    seasonPicker.increment(Board.RED);
-                    this.currentPlayer = Board.BLUE;
+                case BoardInterface.RED:
+                    seasonPicker.increment(BoardInterface.RED);
+                    this.currentPlayer = BoardInterface.BLUE;
                     break;
-                case Board.BLUE:
-                    seasonPicker.increment(Board.BLUE);
-                    this.currentPlayer = Board.RED;
+                case BoardInterface.BLUE:
+                    seasonPicker.increment(BoardInterface.BLUE);
+                    this.currentPlayer = BoardInterface.RED;
                     break;
                 default:
                     System.err.println("invoking mystery player");
@@ -110,12 +118,15 @@ public class GameRunner extends Thread implements Runner {
         this.finished = true;
         java.awt.Toolkit.getDefaultToolkit().beep();
         switch (player) {
-            case Board.RED:
+            case BoardInterface.RED:
                 System.out.println("Red wins!");
+                JOptionPane.showMessageDialog(null, "Red wins!", "Win Dialog", JOptionPane.PLAIN_MESSAGE);
                 announce("Red Wins!");
                 break;
-            case Board.BLUE:
+            case BoardInterface.BLUE:
                 System.out.println("Blue wins!");
+                JOptionPane.showMessageDialog(null, "Blue wins!", "Win Dialog", JOptionPane.PLAIN_MESSAGE);
+                announce("Blue Wins");
                 break;
         }
     }
@@ -129,22 +140,22 @@ public class GameRunner extends Thread implements Runner {
         return seasonPicker;
     }
 
-    private Player createPlayer(int type, int colour, String[] args) {
-        Player player = null;
+    private PlayerInterface createPlayer(int type, int colour, String[] args) {
+        PlayerInterface player = null;
         switch (type) {
-            case Player.R_PATH:
+            case PlayerInterface.R_PATH:
                 player = new R_Path(this, colour, args);
                 break;
-            case Player.CLICK_PLAYER:
-                player = new PointAndClickPlayer(this, colour);
+            case PlayerInterface.CLICK_PLAYER:
+                player = new HumanPlayer(this, colour);
                 break;
-            case Player.R_POINT:
+            case PlayerInterface.R_POINT:
                 player = new R_Single(this, colour, args);
                 break;
-            case Player.ALL_PATH:
+            case PlayerInterface.ALL_PATH:
                 player = new AdjPlayer(this, colour, args);
                 break;
-            case Player.SEASON_PATH:
+            case PlayerInterface.SEASON_PATH:
                 player = new AdjSeasonPlayer(this, colour, args);
                 break;
             default:
@@ -154,11 +165,11 @@ public class GameRunner extends Thread implements Runner {
         return player;
     }
 
-    public Player getPlayerBlue() {
+    public PlayerInterface getPlayerBlue() {
         return blue;
     }
 
-    public Player getPlayerRed() {
+    public PlayerInterface getPlayerRed() {
         return red;
     }
 

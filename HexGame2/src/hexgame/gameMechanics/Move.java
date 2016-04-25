@@ -1,6 +1,8 @@
 package hexgame.gameMechanics;
 
-public class Move {
+import hexgame.hexBoards.InvalidPositionException;
+
+public class Move implements MoveInterface {
 	private int colour, x, y;
 
 	public Move(int colour, int x, int y) {
@@ -13,11 +15,28 @@ public class Move {
 		return this.colour;
 	}
 
-	public int getX() {
+	@Override
+	public boolean setPosition(int x, int y) throws InvalidPositionException {
+		return false;
+	}
+
+	@Override
+	public boolean hasConceded() {
+		return false;
+	}
+
+	@Override
+	public int getXPosition() {
 		return this.x;
 	}
 
-	public int getY() {
+	@Override
+	public int getYPosition() {
 		return this.y;
+	}
+
+	@Override
+	public boolean setConceded() {
+		return false;
 	}
 }

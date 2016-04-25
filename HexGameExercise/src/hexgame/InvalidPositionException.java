@@ -11,4 +11,5 @@ import java.lang.Exception;
  * @version 0.1
  */
 public class InvalidPositionException extends Exception {
+
 }

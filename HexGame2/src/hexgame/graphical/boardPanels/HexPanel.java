@@ -1,6 +1,6 @@
 package hexgame.graphical.boardPanels;
 
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,7 +14,7 @@ import java.awt.RenderingHints;
 @SuppressWarnings("serial")
 public abstract class HexPanel extends JPanel implements Runnable {
 
-  protected Board board = null;
+  protected BoardInterface board = null;
   private Thread animatorThread;
   private int delay = 100;
   private double sm;
@@ -22,7 +22,7 @@ public abstract class HexPanel extends JPanel implements Runnable {
   protected int size;
   protected Point chosenXY;
 
-  public HexPanel(Board board) {
+  public HexPanel(BoardInterface board) {
     this.board = board;
     size = this.board.getSize();
 
@@ -137,10 +137,10 @@ public abstract class HexPanel extends JPanel implements Runnable {
     int value = board.get(x, y);
     Color returnColour = Color.WHITE;
     switch (value) {
-      case Board.RED:
+      case BoardInterface.RED:
         returnColour = (Color.RED);
         break;
-      case Board.BLUE:
+      case BoardInterface.BLUE:
         returnColour = (Color.BLUE);
         break;
       default:

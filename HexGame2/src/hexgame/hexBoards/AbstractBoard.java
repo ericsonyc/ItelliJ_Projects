@@ -1,6 +1,6 @@
 package hexgame.hexBoards;
 
-public abstract class AbstractBoard implements Board {
+public abstract class AbstractBoard implements BoardInterface {
 
     protected boolean changeOccured = true;
     protected int size;

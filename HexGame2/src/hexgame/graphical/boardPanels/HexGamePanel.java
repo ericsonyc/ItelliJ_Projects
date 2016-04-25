@@ -1,7 +1,8 @@
 package hexgame.graphical.boardPanels;
 
 import hexgame.hexBoards.Board;
-import hexgame.hexBoards.GameBoard;
+import hexgame.hexBoards.BoardInterface;
+import hexgame.hexBoards.Board;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +13,7 @@ import java.awt.Polygon;
 public class HexGamePanel extends HexPanel{
 
 
-  public HexGamePanel(GameBoard board){
+  public HexGamePanel(Board board){
     super(board);
     this.addMouseListener(new HexSelector());
     this.setPreferredSize(new Dimension(400, 200));
@@ -27,15 +28,15 @@ public class HexGamePanel extends HexPanel{
      int value = board.get(x, y);
 		Color returnColour = Color.WHITE;
 		switch (value) {
-		case Board.RED:
+		case BoardInterface.RED:
 			returnColour = (Color.RED);
 			break;
-		case Board.BLUE:
+		case BoardInterface.BLUE:
 			returnColour = (Color.BLUE);
 			break;
-		case Board.BLANK:
-      if(((GameBoard)board).getNumberOfSeasons()>1)
-        returnColour = ((GameBoard)board).getSeasonColour(x, y);
+		case BoardInterface.BLANK:
+      if(((Board)board).getNumberOfSeasons()>1)
+        returnColour = ((Board)board).getSeasonColour(x, y);
       else
         returnColour = Color.WHITE;
 			break;
@@ -72,11 +73,11 @@ public void click(Point p) {
 		chosenXY = p;
 		row: for (int y = 0; y < size; y++) {
 		column:	for (int x = 0; x < size; x++) {
-        Polygon poly = calcHexPoly(x, y);
-        if(poly.contains(p)){
-        ((GameBoard)board).setSelected(x,y);
-        break row;
-        }
+        	Polygon poly = calcHexPoly(x, y);
+        	if(poly.contains(p)){
+        		((Board)board).setSelected(x,y);
+        		break row;
+        	}
 			}
 		}
 	}

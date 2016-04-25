@@ -3,7 +3,7 @@ package hexgame.players;
 import hexgame.gameMechanics.Move;
 import hexgame.gameMechanics.Runner;
 import hexgame.hexBoards.AdjMatrix;
-import hexgame.hexBoards.Board;
+import hexgame.hexBoards.BoardInterface;
 
 import java.awt.Point;
 
@@ -27,7 +27,7 @@ public class AdjSeasonPlayer extends AdjPlayer {
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if (game.getBoard().get(x, y) == Board.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player)) {
+                if (game.getBoard().get(x, y) == BoardInterface.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player)) {
 
           /*
            * player related scores
@@ -105,7 +105,7 @@ public class AdjSeasonPlayer extends AdjPlayer {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 // if empty space
-                if (mainBoard.get(x, y) == Board.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player)) {
+                if (mainBoard.get(x, y) == BoardInterface.BLANK && mainBoard.getSeason(x, y) == game.getSeasonPicker().getCurrentSeason(player)) {
                     if (beats(x, y, winx, winy)) {
                         winx = x;
                         winy = y;

@@ -4,7 +4,7 @@ import hexgame.gameMechanics.SeasonMechanics;
 
 import java.util.Random;
 
-public class OpenBoard extends GameBoard {
+public class OpenBoard extends Board {
 
     public OpenBoard(int size, SeasonMechanics seasonPicker, BoardData data) {
         super(size, seasonPicker, data);
@@ -24,11 +24,11 @@ public class OpenBoard extends GameBoard {
         Random random = new Random();
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
-                if (get(x, y) == Board.BLANK)
+                if (get(x, y) == BoardInterface.BLANK)
                     if (random.nextBoolean())
-                        set_noNewLinks(x, y, Board.RED);
+                        set_noNewLinks(x, y, BoardInterface.RED);
                     else
-                        set_noNewLinks(x, y, Board.BLUE);
+                        set_noNewLinks(x, y, BoardInterface.BLUE);
     }
 
     public BoardData getData() {

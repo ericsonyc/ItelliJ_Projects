@@ -1,29 +1,29 @@
 package hexgame.graphical.boardPanels;
 
 import hexgame.hexBoards.ScoreBoard;
-import hexgame.players.Player;
+import hexgame.players.PlayerInterface;
 
 import javax.swing.JTabbedPane;
 
 @SuppressWarnings("serial")
 public class HexGroupPanel extends JTabbedPane {
 
-  Player player;
+  PlayerInterface PlayerInterface;
 
-  public HexGroupPanel(Player player) {
+  public HexGroupPanel(PlayerInterface PlayerInterface) {
     super();
-    this.player = player;
+    this.PlayerInterface = PlayerInterface;
     setup();
   }
 
   private void setup() {
 
-    for (int i = 0; i < player.getAuxBoards().size(); i++) {
+    for (int i = 0; i < PlayerInterface.getAuxBoards().size(); i++) {
       HexPanel panel;
-      if (player.getAuxBoards().get(i) instanceof ScoreBoard)
-        panel = new HeatMap((ScoreBoard) player.getAuxBoards().get(i));
+      if (PlayerInterface.getAuxBoards().get(i) instanceof ScoreBoard)
+        panel = new HeatMap((ScoreBoard) PlayerInterface.getAuxBoards().get(i));
       else
-        panel = new HexDisplayOnlyPanel(player.getAuxBoards().get(i));
+        panel = new HexDisplayOnlyPanel(PlayerInterface.getAuxBoards().get(i));
       this.addTab(panel.getName(), panel);
       panel.startAnimation();
     }

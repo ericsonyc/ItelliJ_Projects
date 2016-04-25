@@ -1,5 +1,7 @@
 package hexgame.hexBoards;
 
+import hexgame.gameMechanics.MoveInterface;
+
 public class ScoreBoard extends AbstractBoard {
 
     private int[][] board;
@@ -55,5 +57,25 @@ public class ScoreBoard extends AbstractBoard {
                     highestScore = value;
                 else if (value < lowestScore)
                     lowestScore = value;
+    }
+
+    @Override
+    public boolean setBoardSize(int sizeX, int sizeY) throws InvalidBoardSizeException, BoardAlreadySizedException {
+        return false;
+    }
+
+    @Override
+    public Piece[][] getBoardView() throws NoBoardDefinedException {
+        return new Piece[0][];
+    }
+
+    @Override
+    public boolean placePiece(Piece colour, MoveInterface move) throws PositionAlreadyTakenException, InvalidPositionException, InvalidColourException, NoBoardDefinedException {
+        return false;
+    }
+
+    @Override
+    public Piece gameWon() throws NoBoardDefinedException {
+        return null;
     }
 }
