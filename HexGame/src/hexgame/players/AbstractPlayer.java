@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public abstract class AbstractPlayer implements PlayerInterface {
 
-    protected ArrayList<BoardInterface> auxBoards = new ArrayList<BoardInterface>();
     protected Runner game;
     protected int player;
     protected int opponent;
@@ -23,7 +22,4 @@ public abstract class AbstractPlayer implements PlayerInterface {
         this.size = game.getBoard().getSize();
     }
 
-    public ArrayList<BoardInterface> getAuxBoards() {
-        return auxBoards;
-    }
 }

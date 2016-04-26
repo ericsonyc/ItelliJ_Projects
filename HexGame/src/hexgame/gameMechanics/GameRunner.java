@@ -1,14 +1,11 @@
 package hexgame.gameMechanics;
 
 import hexgame.hexBoards.BoardInterface;
-import hexgame.hexBoards.BoardInterface;
 import hexgame.hexBoards.Board;
-import hexgame.players.AdjPlayer;
-import hexgame.players.AdjSeasonPlayer;
+import hexgame.hexBoards.InvalidPositionException;
 import hexgame.players.PlayerInterface;
 import hexgame.players.HumanPlayer;
-import hexgame.players.randomTurn.R_Path;
-import hexgame.players.randomTurn.R_Single;
+import hexgame.players.ComputerPlayer;
 
 import javax.swing.*;
 import java.util.Random;
@@ -26,14 +23,17 @@ public class GameRunner extends Thread implements Runner {
     private SeasonMechanics seasonPicker;
     private int gameType;
     private String commentary = "";
+    private JButton redAbstentionBtn;
+    private JButton blueAbstentionBtn;
 
-
-    public GameRunner(int boardSize, int gameType, int seasoncount, int redPlayer, String[] redArgs, int bluePlayer, String[] blueArgs) {
+    public GameRunner(int boardSize, int gameType, int seasoncount, int redPlayer, String[] redArgs, int bluePlayer, String[] blueArgs, JButton redAbstentionBtn, JButton blueAbstentionBtn) {
         this.seasonPicker = new SeasonMechanics(seasoncount);
         this.board = new Board(boardSize, seasonPicker);
         this.gameType = gameType;
         this.red = createPlayer(redPlayer, BoardInterface.RED, redArgs);
         this.blue = createPlayer(bluePlayer, BoardInterface.BLUE, blueArgs);
+        this.redAbstentionBtn = redAbstentionBtn;
+        this.blueAbstentionBtn = blueAbstentionBtn;
     }
 
     public Board getBoard() {
@@ -45,14 +45,14 @@ public class GameRunner extends Thread implements Runner {
 
         Random coinflip = new Random();
 
-        if (this.gameType == Runner.RANDOM_TURN){
+        if (this.gameType == Runner.RANDOM_TURN) {
             if (coinflip.nextBoolean() == true)
                 this.currentPlayer = BoardInterface.BLUE;
             else
                 this.currentPlayer = BoardInterface.RED;
         }
-        if(this.gameType==Runner.OPPOSITE_TURN){
-            this.currentPlayer=BoardInterface.BLUE;
+        if (this.gameType == Runner.OPPOSITE_TURN) {
+            this.currentPlayer = BoardInterface.BLUE;
         }
 
         /*
@@ -78,38 +78,47 @@ public class GameRunner extends Thread implements Runner {
                     break;
             }
             try {
-                if(move!=null)
+                if (move != null)
                     moveAccepted = board.makeMove(move);
             } catch (InvalidMoveException ex) {
-                Logger.getLogger(GameRunner.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(GameRunner.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Invalid Position!", "Dialog", JOptionPane.PLAIN_MESSAGE);
             }
-            if (!moveAccepted)
+            if (!moveAccepted) {
                 System.out.println("Move was not accepted, passing on...");
+            } else {
+                if (board.checkwin(currentPlayer)) {
+                    notifyWin(currentPlayer);
+                    finished = true;
+                }
 
 
-      /*
-       * move has been accepted
-       */
-
-            if (board.checkwin(currentPlayer)) {
-                notifyWin(currentPlayer);
-                finished = true;
-            }
-
-
-            switch (currentPlayer) {
-                case BoardInterface.RED:
-                    seasonPicker.increment(BoardInterface.RED);
-                    this.currentPlayer = BoardInterface.BLUE;
-                    break;
-                case BoardInterface.BLUE:
-                    seasonPicker.increment(BoardInterface.BLUE);
-                    this.currentPlayer = BoardInterface.RED;
-                    break;
-                default:
-                    System.err.println("invoking mystery player");
-                    System.exit(1);
-                    break;
+                switch (currentPlayer) {
+                    case BoardInterface.RED:
+                        seasonPicker.increment(BoardInterface.RED);
+                        this.currentPlayer = BoardInterface.BLUE;
+                        if (red instanceof HumanPlayer) {
+                            redAbstentionBtn.setEnabled(false);
+                        }
+                        if (blue instanceof HumanPlayer) {
+                            blueAbstentionBtn.setEnabled(true);
+                        }
+                        break;
+                    case BoardInterface.BLUE:
+                        seasonPicker.increment(BoardInterface.BLUE);
+                        this.currentPlayer = BoardInterface.RED;
+                        if (red instanceof HumanPlayer) {
+                            redAbstentionBtn.setEnabled(true);
+                        }
+                        if (blue instanceof HumanPlayer) {
+                            blueAbstentionBtn.setEnabled(false);
+                        }
+                        break;
+                    default:
+                        System.err.println("invoking mystery player");
+                        System.exit(1);
+                        break;
+                }
             }
         }
     }
@@ -143,21 +152,21 @@ public class GameRunner extends Thread implements Runner {
     private PlayerInterface createPlayer(int type, int colour, String[] args) {
         PlayerInterface player = null;
         switch (type) {
-            case PlayerInterface.R_PATH:
-                player = new R_Path(this, colour, args);
+            case PlayerInterface.COM_PLAYER:
+                player = new ComputerPlayer(this, colour, args);
                 break;
             case PlayerInterface.CLICK_PLAYER:
                 player = new HumanPlayer(this, colour);
                 break;
-            case PlayerInterface.R_POINT:
-                player = new R_Single(this, colour, args);
-                break;
-            case PlayerInterface.ALL_PATH:
-                player = new AdjPlayer(this, colour, args);
-                break;
-            case PlayerInterface.SEASON_PATH:
-                player = new AdjSeasonPlayer(this, colour, args);
-                break;
+//            case PlayerInterface.R_POINT:
+//                player = new R_Single(this, colour, args);
+//                break;
+//            case PlayerInterface.ALL_PATH:
+//                player = new AdjPlayer(this, colour, args);
+//                break;
+//            case PlayerInterface.SEASON_PATH:
+//                player = new AdjSeasonPlayer(this, colour, args);
+//                break;
             default:
                 System.out.println("ERROR - no player or exception");
                 break;

@@ -1,4 +1,4 @@
-package hexgame.players.randomTurn;
+package hexgame.players;
 
 import hexgame.gameMechanics.Move;
 import hexgame.gameMechanics.Runner;
@@ -6,14 +6,12 @@ import hexgame.hexBoards.BoardInterface;
 import hexgame.hexBoards.Board;
 import hexgame.hexBoards.OpenBoard;
 import hexgame.hexBoards.ScoreBoard;
-import hexgame.players.AbstractPlayer;
-import hexgame.players.PlayerInterface;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class R_Path extends AbstractPlayer {
+public class ComputerPlayer extends AbstractPlayer {
 
     private final ScoreBoard scoreBoard;
     private final Board mainBoard;
@@ -21,7 +19,7 @@ public class R_Path extends AbstractPlayer {
     private final OpenBoard paths;
     private final int sampleLimit;
 
-    public R_Path(Runner game, int colour, String[] args) {
+    public ComputerPlayer(Runner game, int colour, String[] args) {
         super(game, colour, args);
         int parsedVal = 0;
 
@@ -39,10 +37,6 @@ public class R_Path extends AbstractPlayer {
         this.randomFillBoard.setName("R_fill");
         this.paths = mainBoard.openClone();
         this.paths.setName("Paths");
-
-        auxBoards.add(scoreBoard);
-        auxBoards.add(randomFillBoard);
-        auxBoards.add(paths);
 
     }
 

@@ -3,7 +3,6 @@ package hexgame.graphical;
 import hexgame.gameMechanics.GameRunner;
 import hexgame.gameMechanics.Runner;
 import hexgame.graphical.boardPanels.HexGamePanel;
-import hexgame.graphical.boardPanels.HexGroupPanel;
 import hexgame.graphical.boardPanels.HexPanel;
 import hexgame.hexBoards.BoardInterface;
 import hexgame.hexBoards.BoardInterface;
@@ -31,12 +30,12 @@ class Main extends JFrame implements ActionListener {
     private JPanel buttonPanel = null;
     private JButton startButton = new JButton("Start");
     private Runner game;
-//    private JPanel auxBoardsPanel;
+    //    private JPanel auxBoardsPanel;
     private JPanel playBoardPanel;
     private JPanel gameSettings;//initial board, the set of game parameters
     private JPanel settingsPanel;
-    private JButton redAbstentionBtn;
-    private JButton blueAbstentionBtn;
+    private JButton redAbstentionBtn = new JButton("Abstention");
+    private JButton blueAbstentionBtn = new JButton("Abstention");
     private PlayerChoicePanel redPlayerOptions;
     private PlayerChoicePanel bluePlayerOptions;
     private BoardSetupPanel boardSettings;
@@ -71,18 +70,14 @@ class Main extends JFrame implements ActionListener {
 
         int red = redPlayerOptions.getPlayerType();//get the strategy of the red player
         String[] redArgs = redPlayerOptions.getArgs();
-        //print redArgs
-//        for(int i=0;i<redArgs.length;i++){
-//            System.out.println("redArgs"+i+":"+redArgs[0]);
-//        }
+
         int blue = bluePlayerOptions.getPlayerType();
         String[] blueArgs = bluePlayerOptions.getArgs();
         //get the gameType, the turn of two players
         int gameType = boardSettings.getGameType();
         int boardSize = boardSettings.getBoardSize();
         int numberOfSeasons = boardSettings.getSeasonSize();
-        game = new GameRunner(boardSize, gameType, numberOfSeasons, red, redArgs, blue, blueArgs);
-//        game=new GameRunner(boardSize,gameType,red,redArgs,blue,blueArgs);
+        game = new GameRunner(boardSize, gameType, numberOfSeasons, red, redArgs, blue, blueArgs, redAbstentionBtn, blueAbstentionBtn);
         gameThread = (Thread) game;
     }
 
@@ -97,24 +92,19 @@ class Main extends JFrame implements ActionListener {
         playBoardPanel = new JPanel();
         playBoardPanel.setLayout(new BorderLayout());
 
-//        auxBoardsPanel = new JPanel();
-//        auxBoardsPanel.setLayout(new GridLayout(2, 1));
-
         JPanel tickerPanels = new JPanel();
         tickerPanels.setLayout(new GridLayout(2, 1));
 
         JPanel redPanel = new JPanel();
-//        redPanel.setLayout(new BorderLayout());
         redPanel.add(new JLabel("Red:"));
         TurnViewer redTicker = new TurnViewer(game.getSeasonPicker(), BoardInterface.RED);
 
         redTicker.startAnimation();
         redPanel.add(redTicker);
-        redAbstentionBtn=new JButton("Abstention");
         redAbstentionBtn.setActionCommand("red abstention");
         redAbstentionBtn.addActionListener(this);
         redPanel.add(redAbstentionBtn);
-        if(redPlayerOptions.getPlayerType()!= PlayerInterface.CLICK_PLAYER){
+        if (redPlayerOptions.getPlayerType() != PlayerInterface.CLICK_PLAYER) {
             redAbstentionBtn.setEnabled(false);
         }
         tickerPanels.add(redPanel);
@@ -125,10 +115,9 @@ class Main extends JFrame implements ActionListener {
 
         blueTicker.startAnimation();
         bluePanel.add(blueTicker);
-        blueAbstentionBtn=new JButton("Abstention");
         blueAbstentionBtn.setActionCommand("blue abstention");
         blueAbstentionBtn.addActionListener(this);
-        if(bluePlayerOptions.getPlayerType()!=PlayerInterface.CLICK_PLAYER){
+        if (bluePlayerOptions.getPlayerType() != PlayerInterface.CLICK_PLAYER) {
             blueAbstentionBtn.setEnabled(false);
         }
         bluePanel.add(blueAbstentionBtn);
@@ -141,11 +130,6 @@ class Main extends JFrame implements ActionListener {
         playBoardPanel.add(tickerPanels, BorderLayout.SOUTH);
 
         activeBoardsPanel.add(playBoardPanel, BorderLayout.CENTER);
-
-//        auxBoardsPanel.add(new HexGroupPanel(game.getPlayerRed()));
-//        auxBoardsPanel.add(new HexGroupPanel(game.getPlayerBlue()));
-
-//        activeBoardsPanel.add(auxBoardsPanel, BorderLayout.EAST);
 
         this.add(activeBoardsPanel, BorderLayout.CENTER);
 
@@ -162,13 +146,13 @@ class Main extends JFrame implements ActionListener {
             this.prepareGame();//prepare the hex game
             generateBoardPanels();//generate the panel of boards
             gameThread.start();
-        }else if("red abstention".equals(e.getActionCommand())){
-            if(redPlayerOptions.getPlayerType()==PlayerInterface.CLICK_PLAYER){
-                HumanPlayer.abstention=true;
+        } else if ("red abstention".equals(e.getActionCommand())) {
+            if (redPlayerOptions.getPlayerType() == PlayerInterface.CLICK_PLAYER) {
+                HumanPlayer.abstention = true;
             }
-        }else if("blue abstention".equals(e.getActionCommand())){
-            if(bluePlayerOptions.getPlayerType()==PlayerInterface.CLICK_PLAYER){
-                HumanPlayer.abstention=true;
+        } else if ("blue abstention".equals(e.getActionCommand())) {
+            if (bluePlayerOptions.getPlayerType() == PlayerInterface.CLICK_PLAYER) {
+                HumanPlayer.abstention = true;
             }
         }
     }
@@ -185,9 +169,9 @@ class Main extends JFrame implements ActionListener {
             }
         };
         frame.addWindowListener(l);
-        Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension gameSize=frame.getSize();
-        frame.setLocation((screenSize.width-gameSize.width)/2,(screenSize.height-gameSize.height)/2);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension gameSize = frame.getSize();
+        frame.setLocation((screenSize.width - gameSize.width) / 2, (screenSize.height - gameSize.height) / 2);
         frame.pack();
         frame.setVisible(true);
     }
