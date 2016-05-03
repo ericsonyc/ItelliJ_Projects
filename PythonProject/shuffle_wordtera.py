@@ -12,7 +12,7 @@ plt.rcParams['font.size'] = 12
 # offset4 = [84, 92]
 # offset5 = [120, 128]
 
-str='H:\\rdma_shuffle\\data\\terasort\\'
+str = 'H:\\rdma_shuffle\\data\\terasort\\'
 
 # read cpu
 cpux = []
@@ -21,7 +21,7 @@ cpuy2 = []
 cpuy3 = []
 cpuy4 = []
 cpucount = 0
-file = open(str+'cpu.txt', 'r')
+file = open(str + 'cpu.txt', 'r')
 for line in file:
     parts = line.split("\t")
     cpux.append(cpucount)
@@ -76,7 +76,7 @@ memy4 = []
 memy5 = []
 memy6 = []
 memcount = 0
-file = open(str+'memory.txt', 'r')
+file = open(str + 'memory.txt', 'r')
 for line in file:
     parts = line.split("\t")
     memx.append(memcount)
@@ -136,7 +136,7 @@ iox = []
 ioy1 = []
 ioy2 = []
 iocount = 0
-file = open(str+'io.txt', 'r')
+file = open(str + 'io.txt', 'r')
 for line in file:
     parts = line.split("\t")
     iox.append(iocount)
@@ -162,6 +162,23 @@ for line in file:
 pltcpu = plt.subplot(311)
 pltmem = plt.subplot(312)
 pltio = plt.subplot(313)
+
+print(len(cpux))
+cpux = cpux[0:len(cpux) - 20]
+cpuy1 = cpuy1[20:]
+cpuy2 = cpuy2[20:]
+cpuy3 = cpuy3[20:]
+cpuy4 = cpuy4[20:]
+memx = memx[0:len(memx) - 20]
+memy1 = memy1[20:]
+memy2 = memy2[20:]
+memy3 = memy3[20:]
+memy4 = memy4[20:]
+memy5 = memy5[20:]
+memy6 = memy6[20:]
+iox = iox[0:len(iox) - 20]
+ioy1 = ioy1[20:]
+ioy2 = ioy2[20:]
 
 # cpu plot
 pltcpu1, = pltcpu.plot(cpux, cpuy1, color='#3333bb')

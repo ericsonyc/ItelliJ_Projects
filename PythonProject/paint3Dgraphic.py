@@ -4,11 +4,11 @@ from mpl_toolkits.mplot3d import Axes3D
 
 plt.rcParams['text.usetex'] = True
 plt.rcParams['mathtext.default'] = 'bf'
-# plt.rcParams['lines.linewidth'] = 2
+plt.rcParams['lines.linewidth'] = 2
 plt.rcParams['font.size'] = 12
 
-fig = plt.figure()
-ax = Axes3D(fig)
+# fig = plt.figure()
+# ax = Axes3D(fig)
 x = [0]
 temp = 0.5
 for i in range(8):
@@ -94,7 +94,7 @@ z3 = [[237, 205, 227, 218, 212, 247, 192, 222, 204, 213, 198, 249, 209, 212, 206
       [311, 307, 180, 281, 144, 145, 152, 296, 131, 128, 128, 132, 152, 152, 150, 135, 281, 132, 121, 131, 122, 122,
        124, 126, 156, 130, 144, 132, 131, 129]]
 
-ax.axis([0, 4, 0, 31])
+# ax.axis([0, 4, 0, 31])
 # ax.set_xticklabels([])
 # ax.set_yticklabels([])
 temp = 260
@@ -104,15 +104,12 @@ for i in range(len(z1)):
         z1[i][j] += temp
         z2[i][j] += temp
 
-for i in range(1):  # number of z array
-    for j in range(len(x) - 1):  # number of x array
-        temp = [x[j] for t in range(len(y))]
-        ax.scatter(temp, y, z1[j], c='g', marker='^')
-        ax.scatter(temp, y, z2[j], marker='o', c='r')
-        ax.scatter(temp, y, z3[j], marker='o', c='y')
-        # temp = [x[0] for j in range(len(y))]
-        # data = [500 for j in range(len(y))]
-        # ax.scatter(temp, y, data, 'MarkerSize', 10, c='blue')
+# for i in range(1):  # number of z array
+#     for j in range(len(x) - 1):  # number of x array
+#         temp = [x[j] for t in range(len(y))]
+#         ax.scatter(temp, y, z1[j], c='g', marker='^')
+#         ax.scatter(temp, y, z2[j], marker='o', c='r')
+#         ax.scatter(temp, y, z3[j], marker='o', c='y')
 
 # for i in range(len(z1)):
 #     for j in range(len(x)):
@@ -123,7 +120,42 @@ for i in range(1):  # number of z array
 # ax.scatter(x, y, Z1, c='g')
 # ax.scatter(X, Y, Z2, c='r')
 
-ax.set_ylabel('Reduce Number')
-ax.set_xlabel('Container Memory(G)')
-ax.set_zlabel('Time(s)')
-plt.show()
+# ax.set_ylabel('Reduce Number')
+# ax.set_xlabel('Container Memory(G)')
+# ax.set_zlabel('Time(s)')
+# plt.show()
+# plt.savefig("H:\\rdma_shuffle\\data\\pktm\\out1.eps")
+
+print(len(y))
+print(len(z1[0]))
+
+plta=plt.subplot(411)
+pltb=plt.subplot(412)
+pltc=plt.subplot(413)
+pltd=plt.subplot(414)
+
+plta.plot(y, z1[0], color='magenta')
+plta.plot(y, z2[0], color='red')
+plta.plot(y, z3[0], color='blue')
+
+pltb.plot(y, z1[1], color='magenta')
+pltb.plot(y, z2[1], color='red')
+pltb.plot(y, z3[1], color='blue')
+
+pltc.plot(y, z1[4], color='magenta')
+pltc.plot(y, z2[4], color='red')
+pltc.plot(y, z3[4], color='blue')
+
+pltd.plot(y, z1[3], color='magenta')
+pltd.plot(y, z2[3], color='red')
+pltd.plot(y, z3[3], color='blue')
+
+# plt.ylabel('Time(s)', fontsize=16)
+# plt.xlabel('Reduce Number', fontsize=16)
+# plta.xlim(0, 35)
+# plta.ylim(150, 800)
+# leg = plta.legend([plt1, plt2, plt3], ['Original Hadoop', 'Alter Hadoop', 'Alter Spark'])
+# leg=plta.legend()
+# leg.get_frame()
+# plt.show()
+plt.savefig("H:\\rdma_shuffle\\data\\pktm\\out1.eps")

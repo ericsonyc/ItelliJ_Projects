@@ -21,7 +21,7 @@ $RECYCLE.BIN/
 *.MF
 *.name
 *.apk
-*.txt
+#*.txt
 *.png
 
 # Windows shortcuts
