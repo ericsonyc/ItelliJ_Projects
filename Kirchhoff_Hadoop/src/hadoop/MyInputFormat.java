@@ -99,7 +99,7 @@ public class MyInputFormat extends FileInputFormat<IntWritable, Text> {
             }
         }
         List<InputSplit> lists = new ArrayList<InputSplit>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 24000/Length; i++) {
             lists.add(splits.get(i));
         }
         if (lists.size() > splits.size())

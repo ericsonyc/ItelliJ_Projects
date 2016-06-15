@@ -178,7 +178,7 @@ plt.fill_between(newrealtime, cpujob4, cpujob5, facecolor='yellow')
 plt.fill_between(newrealtime, cpujob5, cpujob6, facecolor='magenta')
 # # plt.fill_between(x,y,t,facecolor="b")
 plt.xlabel('Time(s)', fontsize=16)
-plt.ylabel('CPU', fontsize=16)
+plt.ylabel('CPU Threads', fontsize=16)
 plt.xlim(0, 650)
 plt.ylim(0, 144)
 

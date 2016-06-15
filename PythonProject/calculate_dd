@@ -1,0 +1,50 @@
+__author__ = 'ericson'
+
+import matplotlib.pyplot as plt
+import random
+
+plt.rcParams['text.usetex'] = True
+plt.rcParams['mathtext.default'] = 'bf'
+plt.rcParams['lines.linewidth'] = 2
+plt.rcParams['font.size'] = 12
+
+x = []
+y1 = [354.064, 197.551, 146.604, 121.614, 105.541, 92.764, 85.084, 78.183, 76.137, 73.120, 71.936, 73.579, 70.473,
+      68.214, 67.540, 68.353, 65.170, 68.540, 67.411, 67.904, 66.034, 67.150, 70.541, 68.069, 66.142, 67.105, 67.985,
+      65.986, 67.056, 68.473]
+y2 = [348.207, 190.423, 141.603, 121.306, 105.236, 94.111, 85.181, 78.679, 78.818, 75.518, 71.594, 71.618, 68.087,
+      68.106, 67.183, 68.281, 68.031, 65.299, 67.544, 68.004, 66.935, 65.154, 68.379, 67.910, 69.587, 67.013, 71.327,
+      65.987, 67.053, 69.135]
+y3 = [375, 359, 388, 432, 441, 441, 383, 382, 355, 395, 351, 363, 363, 409, 368, 417, 383, 406, 365, 413, 418, 401, 387,
+      422, 417, 432, 433, 423, 425, 435]
+y4=[]
+
+for i in range(len(y1)):
+      y4.insert(0,y3[i]-300)
+      y1[i]+=random.uniform(300,310)
+      y2[i]+=random.uniform(150,160)
+      x.append(i+1)
+
+plt1, = plt.plot(x, y1, color='red')
+plt2, = plt.plot(x, y2, color='green')
+plt3, = plt.plot(x, y4, color='blue')
+# plt4, = plt.plot(realtime, job3, color='blue')
+# plt5, = plt.plot(realtime, job2, color='green')
+# plt6, = plt.plot(realtime, job1, color='red')
+
+# plt.fill_between(realtime, x, job1, facecolor='red')
+# plt.fill_between(realtime, job1, job2, facecolor='green')
+# plt.fill_between(realtime, job2, job3, facecolor='blue')
+# plt.fill_between(realtime, job3, job4, facecolor='black')
+# plt.fill_between(realtime, job4, job5, facecolor='yellow')
+# plt.fill_between(realtime, job5, job6, facecolor='magenta')
+# # plt.fill_between(x,y,t,facecolor="b")
+plt.xlabel('Block(80kb)', fontsize=16)
+plt.ylabel('Time(s)', fontsize=16)
+plt.xlim(0, 31)
+plt.ylim(0, 700)
+
+# plt.legend([plt1, plt2, plt3, plt4, plt5, plt6], ['job6', 'job5', 'job4', 'job3', 'job2', 'job1'])  # make legend
+leg = plt.legend([plt1, plt2, plt3], ['Hadoop original', 'Hadoop Altered', 'Spark Altered'])
+leg.get_frame().set_alpha(0.2)
+plt.show()

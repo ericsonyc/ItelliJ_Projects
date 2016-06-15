@@ -64,14 +64,13 @@ import numpy as np
 plt.rcParams['text.usetex'] = True
 plt.rcParams['mathtext.default'] = 'bf'
 
-n_groups = 4
-means_makespan = (1384.234, 1513.568, 1542.126, 1036.271)
-means_mem = (0.67925, 0.6645, 0.65997, 0.932)
-means_cpu = (0.38, 0.37, 0.365, 0.5734)
-means_makespan_new = (547.917, 537.535, 564.479, 382.475)
-means_mem_new = (0.815957021489, 0.758236, 0.743570498, 0.95234)
-means_cpu_new = (0.51824087956, 0.52345, 0.514556724267, 0.742395)
-index = np.arange(n_groups)
+# means_makespan = (1384.234, 1513.568, 1542.126, 1134.49082, 1036.271)
+# means_mem = (0.67925, 0.6645, 0.65997, 0.883025, 0.932)
+# means_cpu = (0.38, 0.37, 0.365, 0.475, 0.5734)
+means_makespan_new = (547.917, 537.535, 564.479, 432.222129, 382.475)
+means_mem_new = (0.815957021489, 0.758236, 0.743570498, 0.90001, 0.95234)
+means_cpu_new = (0.51824087956, 0.52345, 0.514556724267, 0.639625187406, 0.742395)
+index = np.arange(len(means_makespan_new))
 bar_width = 0.2
 opacity = 0.8
 # x = np.arange(0., np.e, 0.01)
@@ -89,9 +88,9 @@ ax2 = ax1.twinx()  # this is the important function
 # ax2.plot(x, y2, 'g', label="left")
 ax2.bar(index + bar_width * 2, means_mem_new, bar_width, alpha=opacity, color='r', label='Memory-Usage')
 ax2.bar(index + bar_width * 3, means_cpu_new, bar_width, alpha=opacity, color='b', label="CPU-Usage")
-hl = ax2.legend(loc=1, bbox_to_anchor=(0.85, 1)).get_frame().set_alpha(0.5)
+hl = ax2.legend(loc=1, bbox_to_anchor=(0.65, 1)).get_frame().set_alpha(0.5)
 ax2.set_ybound(0, 1)
 ax2.set_ylabel('Percentage(\%)')
-plt.xticks(index + bar_width * 2.5, ('FIFO', 'Fair', 'Capacity', 'EASY'))
+plt.xticks(index + bar_width * 2.5, ('FIFO', 'Fair', 'Capacity', 'HaSTE', 'EASY'))
 plt.savefig("D:\\resultnew1.eps")
 plt.show()

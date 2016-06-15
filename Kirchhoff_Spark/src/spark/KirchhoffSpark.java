@@ -55,7 +55,7 @@ public class KirchhoffSpark {
 
         pconf.setPath(otherArgs[0]);
 
-        hadoopConf.setLong("FileSplitLength", 80L);//文件逻辑切分字节
+        hadoopConf.setLong("FileSplitLength", Long.parseLong(otherArgs[2]));//文件逻辑切分字节
         hadoopConf.setInt("SplitPerMap", 1);//一个map中多少个键值对
 
         System.out.println("begin RDD");

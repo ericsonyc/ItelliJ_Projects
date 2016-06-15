@@ -41,14 +41,14 @@ public class Kirchhoff {
             kirchhoff.cpuCxyFile = otherArgs[0] + kirchhoff.cpuCxyFile;
             kirchhoff.rmsvFile = otherArgs[0] + kirchhoff.rmsvFile;
 
-            conf.setLong("FileSplitLength", 800L);//文件逻辑切分字节
+            conf.setLong("FileSplitLength", Long.parseLong(otherArgs[4]));//文件逻辑切分字节
             conf.setInt("SplitPerMap", 1);//一个map中多少个键值对
 
             // set the configuration
             conf.set("mapreduce.task.timeout", "1000000000");
-            conf.set("mapreduce.job.reduce.slowstart.completedmaps", "0.5");
+            conf.set("mapreduce.job.reduce.slowstart.completedmaps", "0.7");
             //conf.set("yarn.nodemanager.resource.memory-mb", "20480");
-            conf.set("yarn.scheduler.minimum-allocation-mb", "1536");
+            conf.set("yarn.scheduler.minimum-allocation-mb", "1024");
             //conf.set("yarn.scheduler.maximum-allocation-mb", "3072");
 //            conf.set("mapreduce.map.memory.mb", "1024");
             conf.set("mapreduce.reduce.memory.mb", otherArgs[3]);

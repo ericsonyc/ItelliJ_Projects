@@ -93,10 +93,10 @@ public class MyInputFormat extends FileInputFormat<Integer, String> {
             }
         }
         List<InputSplit> lists = new ArrayList<InputSplit>();
-        int data = 10;
-        int length = splits.size();
-        length = length < data ? length : data;
-        for (int i = 0; i < length; i++) {
+//        int data = 10;
+//        int length = splits.size();
+//        length = length < data ? length : data;
+        for (int i = 0; i < 2400/Length; i++) {
             lists.add(splits.get(i));
         }
         return lists;
